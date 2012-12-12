@@ -1,8 +1,8 @@
-<img src="http://www.thepropertyteam.com/wp-content/uploads/treb/%MLSNUMBER%/%MLSNUMBER%_2.jpg" width="50%">
+<img src="http://www.yoursite.com/wp-content/uploads/treb/%MLSNUMBER%/%MLSNUMBER%_2.jpg" width="50%">
 <br />
 [lg_folder folder="%MLSNUMBER%/" caption="%STREETNUMBER% %STREETNAME%"]
 [box style="comment"]
-<a href="http://www.thepropertyteam.com/contact-us">CLICK HERE</a> to contact, or Call 416-236-1241 Ask For Rose Kutzko or Natalie Rajewski For More Info
+<a href="http://www.yoursite.com/contact-us">CLICK HERE</a> to contact, or Call 416-000-0000 
 [/box]
 <table border="0" width="80%">
 <tr>
