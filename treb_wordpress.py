@@ -22,7 +22,6 @@ import wordpresslib
 import ConfigParser
 from datetime import date, timedelta
 from ftplib import FTP
-#from googlemaps import GoogleMaps
 from  pygeocoder import Geocoder
 from tempfile import mkstemp
 from shutil import move
