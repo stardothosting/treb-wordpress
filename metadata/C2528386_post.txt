@@ -1,0 +1,41 @@
+<img src="http://www.yoursite.com/wp-content/uploads/treb/C2528386/C2528386_2.jpg" width="50%">
+<br />
+[lg_folder folder="C2528386/" caption="33 University Ave"]
+[box style="comment"]
+<a href="http://www.yoursite.com/contact-us">CLICK HERE</a> to contact, or Call 416-000-0000 
+[/box]
+<table border="0" width="80%">
+<tr>
+<td width="30%">Street Address :</td>
+<td width="70%">33 University Ave</td>
+</tr>
+<tr>
+<td width="30%">Price :</td>
+<td width="70%">$$1,288,000.00</td>
+</tr>
+<tr>
+<td width="30%">MLS #</td>
+<td width="70%">C2528386</td>
+</tr>
+<tr>
+<td width="30%">Bathrooms :</td>
+<td width="70%">2</td>
+</tr>
+<tr>
+<td width="30%">Bedrooms :</td>
+<td width="70%">2</td>
+</tr>
+<tr>
+<td width="30%">Square Footage :</td>
+<td width="70%">2500-2749</td>
+</tr>
+<tr>
+<td width="30%">Virtual Tour :</td>
+<td width="70%"><a href="http://imaginahome.com/view_house.aspx?house=261276054&view=virtualtour" target="_new"><b>Click here for virtual tour</b></a></td>
+</tr>
+</table>
+[box style="grey"]
+Show-Stopping Penthouse At The Empire Plaza! Superb Condominium Residence With 2576Ft2 Of Living Space Featuring A Split-Bedroom Plan, Stately Proportions And Stunning City Views From East To West. Private Sub-Penthouse Level With Only Four Suites And Fob-Controlled Elevator. Gracious Floor Plan Boasts Elegant Foyer Entry, Grand Living And Dining Rooms And Private Den. Complementented By A Walk-In Laundry Room, Astonishing Closet Space And Two Car Parking.
+[/box]
+<br /><br />
+[google-map-v3 width="500" height="250" zoom="15" maptype="roadmap" mapalign="center" directionhint="false" language="default" poweredby="false" maptypecontrol="true" pancontrol="true" zoomcontrol="true" scalecontrol="true" streetviewcontrol="true" scrollwheelcontrol="false" draggable="true" tiltfourtyfive="false" addmarkermashupbubble="false" addmarkermashupbubble="false" addmarkerlist="33 University Ave, toronto ontario M5J2S7{}1-default.png" bubbleautopan="true" showbike="false" showtraffic="false" showpanoramio="false"]

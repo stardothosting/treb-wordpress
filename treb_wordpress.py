@@ -228,7 +228,7 @@ try:
                 print "No photos ..."
 
         # Generate post content from the template file
-	template_read = open("/usr/local/bin/treb/python/listing_template.txt", "r")
+	template_read = open("/usr/local/bin/treb/python/treb-wordpress/listing_template.txt", "r")
 	template_text = template_read.read()
 	template_read.close()
 
@@ -254,7 +254,7 @@ try:
 
 	#Output text to a post file to be eventually posted to wordpress	
 	template_out = open("/usr/local/bin/treb/python/treb-wordpress/metadata/" + mlsnumber + "_post.txt", "w")
-	template_out.write(template_replaced)
+	template_out.write(post.content)
 	template_out.close()
 
         # If there's a sold date then just set the sold flag to 1
