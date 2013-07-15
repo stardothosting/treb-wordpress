@@ -9,3 +9,5 @@ root_dir=/var/www/html/sitename.com
 wp_url=http://www.sitename.com/xmlrpc.php
 wp_username="admin"
 wp_password="wordpresspassword"
+user_perm: 500
+group_perm: 501 

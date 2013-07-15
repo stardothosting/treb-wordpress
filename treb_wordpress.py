@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # TREB wordpress listing import script
+# www.stardothosting.com [Web Hosting]
+# www.shift8web.com [Web Design]
 
 #Copyright (C) 2013 Star Dot Hosting Inc
 
@@ -116,6 +118,8 @@ password = ConfigSectionMap("treb")['trebpass']
 agent_id = ConfigSectionMap("treb")['agent_id']
 int_date = Config.getint('treb', 'num_days')
 rootdir = ConfigSectionMap("treb")['root_dir']
+userperm = Config.getint('wordpress', 'user_perm')
+groupperm = Config.getint('wordpress', 'group_perm')
 
 # declare variables based on arguments
 past_date = date.today() - timedelta(int_date)
@@ -183,15 +187,10 @@ try:
                         listingcategory = "OtherListings"
 
         # Get the latitude + longitude variables
-	#gmaps = GoogleMaps()
-	#lat, lng = gmaps.address_to_latlng(address + " Toronto, Ontario, Canada")
 	results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
 	lat, lng = results[0].coordinates	
 	lat = str(lat)
 	lng = str(lng)
-
-	print "Latitude : " + lat
-	print "Longitude : " + lng
 
         # Set variable for virtual tour
 	if virtualtour == "":
@@ -209,21 +208,21 @@ try:
     			os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
 
 		# GET The image files via FTP
-	#	ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
-	#	ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
-	#	ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
-	#	ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
-	#	ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
-	#	ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
-	#	ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
-	#	ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
-	#	ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
 		
 		# Adjust permissions , change 33 to whatever GID/UID you need
-		os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, 33, 33)
+		os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
 		for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
 			for filename in files:
-				os.chown(os.path.join(root, filename), 33, 33)
+				os.chown(os.path.join(root, filename), userperm, groupperm)
         else:
                 print "No photos ..."
 
