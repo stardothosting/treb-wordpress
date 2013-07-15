@@ -29,25 +29,38 @@ from wordpress_xmlrpc import *
 from wordpress_xmlrpc.methods.posts import *
 from wordpress_xmlrpc.methods.users import *
 
+# Read configuration file parameters
 Config = ConfigParser.ConfigParser()
 Config.read("~/.treb_wordpress")
 
 # Check command arguments
-if len(sys.argv) <= 6 :
-        print "\nUsage Syntax :"
-        print "\ntreb_fetch.py [option1] [option2] [option3] [username] [password] [rootdir]"
-        print "Option 1 : \"avail\" \"unavail\" , processes available or unavailable listings"
-        print "Option 2 : \"NNNNNNN\" , MLS Agent ID number (7 digits)"
-        print "Option 3 : Number of days prior to gather listing data"
-        print "Username : TREB username for downloading listings"
-        print "Password : TREB password for downloading listings"
-        print "Root Dir : specifcy the root directory of the site, for interatction with wordpress, no trailing slash\n\n"
-	sys.exit(0)
+#if len(sys.argv) <= 6 :
+#        print "\nUsage Syntax :"
+#        print "\ntreb_fetch.py [option1] [option2] [option3] [username] [password] [rootdir]"
+#        print "Option 1 : \"avail\" \"unavail\" , processes available or unavailable listings"
+#        print "Option 2 : \"NNNNNNN\" , MLS Agent ID number (7 digits)"
+#        print "Option 3 : Number of days prior to gather listing data"
+#        print "Username : TREB username for downloading listings"
+#        print "Password : TREB password for downloading listings"
+#        print "Root Dir : specifcy the root directory of the site, for interatction with wordpress, no trailing slash\n\n"
+#	sys.exit(0)
 
-# Wordpress Connection and Authentication 
+if len(sys.argv) <= 1 :
+        print "\nUsage Syntax :"
+        print "\ntreb_fetch.py [option1] [option2]"
+        print "Option 1 : \"avail\" \"unavail\" , processes available or unavailable listings"
+        print "Option 2 : Number of days prior to gather listing data"
+        sys.exit(0)
+
+# Get Connection and Authentication  config data
 wp_url = ConfigSectionMap("wordpress")['wp_url']
 wp_username = ConfigSectionMap("wordpress")['wp_username']
 wp_password = ConfigSectionMap("wordpress")['wp_password']
+user = ConfigSectionMap("treb")['trebuser']
+password = ConfigSectionMap("treb")['trebpass']
+agent_id = ConfigSectionMap("treb")['agent_id']
+int_date = ConfigSectionMap("treb")['num_days']
+rootdir = ConfigSectionMap("treb")['root_dir']
 
 ###################
 # Functions START #
@@ -103,12 +116,6 @@ def replace_words(text, word_dic):
 #################
 	
 # declare variables based on arguments
-agent_id = sys.argv[2]
-int_date = int(sys.argv[3])
-user = sys.argv[4]
-password = sys.argv[5]
-rootdir = sys.argv[6]
-
 past_date = date.today() - timedelta(int_date)
 the_day = past_date.strftime('%d')
 the_mon = past_date.strftime('%m')

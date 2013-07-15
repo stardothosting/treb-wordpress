@@ -1,0 +1,11 @@
+[treb]
+agent_id:1234567
+num_days:1
+trebuser:trebusername
+trebpass:trebpassword
+root_dir:"/var/www/html/sitename.com/public_html"
+
+[wordpress]
+wp_url:"http://www.sitename.com/xmlrpc.php"
+wp_username:"admin"
+wp_password:"yourwordpresspassword"
