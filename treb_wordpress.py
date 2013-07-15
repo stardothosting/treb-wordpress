@@ -20,7 +20,7 @@
 
 
 import csv, sys, urllib, urlparse, string, time, locale, os, os.path, socket, re, requests, xmlrpclib
-import wordpresslib
+#import wordpresslib
 import ConfigParser
 from datetime import date, timedelta
 from ftplib import FTP
@@ -28,8 +28,10 @@ from  pygeocoder import Geocoder
 from tempfile import mkstemp
 from shutil import move
 from wordpress_xmlrpc import *
-from wordpress_xmlrpc.methods.posts import *
-from wordpress_xmlrpc.methods.users import *
+#from wordpress_xmlrpc import Client
+#from wordpress_xmlrpc.methods import posts
+#from wordpress_xmlrpc import WordPressPost
+#from wordpress_xmlrpc import WordPressPage
 
 # Read configuration file parameters
 Config = ConfigParser.ConfigParser()
@@ -84,18 +86,18 @@ def ftpget( hostname, localpath, remotepath, filename ) :
 
 #Searches wordpress posts based on title
 def find_id(title):
-
+	client = Client(wp_url, wp_username, wp_password)
 	offset = 0
-	increment = 10
+	increment = 20
+
 	while True:
-		filter = { 'offset' : offset }
-		p = wp.call(GetPosts(filter))
-		if len(p) == 0:
-			break # no more posts returned
-		for post in p:
+        	posts = client.call(posts.GetPosts({'number': increment, 'offset': offset}))
+        	if len(posts) == 0:
+                	break  # no more posts returned
+        	for post in posts:
 			if post.title == title:
 				return(post.id)
-		offset = offset + increment
+        	offset = offset + increment
 	return(False)
 
 #Take text and replace words that match an array
@@ -127,6 +129,7 @@ the_day = past_date.strftime('%d')
 the_mon = past_date.strftime('%m')
 the_yr = past_date.strftime('%-Y')
 locale.setlocale(locale.LC_ALL, 'en_US.UTF8')
+
 
 # check if slash was added to rootdir
 if rootdir.endswith('/'):
@@ -208,15 +211,15 @@ try:
     			os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
 
 		# GET The image files via FTP
-		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
-		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
-		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
-		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
-		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
-		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
-		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
-		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
-		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
+		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
+		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
+		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
+		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
+		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
+		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
+		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
+		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
 		
 		# Adjust permissions , change 33 to whatever GID/UID you need
 		os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
@@ -235,7 +238,7 @@ try:
 	reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour}
 
 	# Check if the post exists first
-	wp = Client(wp_url,wp_username,wp_password)
+	wp = Client(wp_url, wp_username, wp_password)
 	post = WordPressPost()
 	post.title = address
 	post.content = replace_words(template_text, reps)
@@ -243,18 +246,27 @@ try:
         'post_tag': [mlsnumber],
         'category': ['My Child Category'],
 	}
+	
+	print "Post title : " + post.title
+	offset = 0
+	increment = 20
+	client = Client(wp_url, wp_username, wp_password)
+	while True:
+        	posts = client.call(posts.GetPosts({'number': increment, 'offset': offset}))
+        	if len(posts) == 0:
+                	break  # no more posts returned
+        	for post in posts:
+                	print "Post found!"
+        	offset = offset + increment
 	#post_id = find_id(post.title)
 	#if post_id:
 	#	print "Sorry, a post ID exists already with that title: ", post_id
 	#else:
-	
-	#wp.call(NewPost(post))
-
-
-	#Output text to a post file to be eventually posted to wordpress	
-	template_out = open("/usr/local/bin/treb/python/treb-wordpress/metadata/" + mlsnumber + "_post.txt", "w")
-	template_out.write(post.content)
-	template_out.close()
+		#wp.call(NewPost(post))
+		#Output text to a post file to be eventually posted to wordpress	
+	#	template_out = open("/usr/local/bin/treb/python/treb-wordpress/metadata/" + mlsnumber + "_post.txt", "w")
+	#	template_out.write(post.content)
+	#	template_out.close()
 
         # If there's a sold date then just set the sold flag to 1
         #if [ "$solddate" = "" ]
