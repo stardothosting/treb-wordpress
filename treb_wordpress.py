@@ -22,7 +22,8 @@ import wordpresslib
 import ConfigParser
 from datetime import date, timedelta
 from ftplib import FTP
-from googlemaps import GoogleMaps
+#from googlemaps import GoogleMaps
+from  pygeocoder import Geocoder
 from tempfile import mkstemp
 from shutil import move
 from wordpress_xmlrpc import *
@@ -114,7 +115,7 @@ wp_password = ConfigSectionMap("wordpress")['wp_password']
 user = ConfigSectionMap("treb")['trebuser']
 password = ConfigSectionMap("treb")['trebpass']
 agent_id = ConfigSectionMap("treb")['agent_id']
-int_date = ConfigSectionMap("treb")['num_days']
+int_date = Config.getint('treb', 'num_days')
 rootdir = ConfigSectionMap("treb")['root_dir']
 
 # declare variables based on arguments
@@ -183,10 +184,15 @@ try:
                         listingcategory = "OtherListings"
 
         # Get the latitude + longitude variables
-	gmaps = GoogleMaps()
-	lat, lng = gmaps.address_to_latlng(address + " Toronto, Ontario, Canada")
+	#gmaps = GoogleMaps()
+	#lat, lng = gmaps.address_to_latlng(address + " Toronto, Ontario, Canada")
+	results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
+	lat, lng = results[0].coordinates	
 	lat = str(lat)
 	lng = str(lng)
+
+	print "Latitude : " + lat
+	print "Longitude : " + lng
 
         # Set variable for virtual tour
 	if virtualtour == "":
