@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # TREB wordpress listing import script
-# www.stardothosting.com [Web Hosting]
-# www.shift8web.com [Web Design]
+# www.stardothosting.com : Managed Hosting Services
+# www.shift8web.com : Web Design and Development
 
 #Copyright (C) 2013 Star Dot Hosting Inc
 
