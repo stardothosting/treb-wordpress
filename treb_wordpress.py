@@ -27,7 +27,10 @@ from ftplib import FTP
 from  pygeocoder import Geocoder
 from tempfile import mkstemp
 from shutil import move
-from wordpress_xmlrpc import *
+from wordpress_xmlrpc import Client, WordPressPost
+from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
+from wordpress_xmlrpc.methods.users import GetUserInfo
+#from wordpress_xmlrpc import *
 #from wordpress_xmlrpc import Client
 #from wordpress_xmlrpc.methods import posts
 #from wordpress_xmlrpc import WordPressPost
@@ -35,7 +38,7 @@ from wordpress_xmlrpc import *
 
 # Read configuration file parameters
 Config = ConfigParser.ConfigParser()
-Config.read("/root/.treb_wordpress")
+Config.read(os.path.expanduser('~/.treb_wordpress'))
 
 # Check command arguments
 if len(sys.argv) <= 1 :
@@ -86,19 +89,19 @@ def ftpget( hostname, localpath, remotepath, filename ) :
 
 #Searches wordpress posts based on title
 def find_id(title):
-	client = Client(wp_url, wp_username, wp_password)
-	offset = 0
-	increment = 20
+        offset = 0
+        increment = 10
+        while True:
+                filter = { 'offset' : offset }
+                p = wp.call(GetPosts(filter))
+                if len(p) == 0:
+                        break # no more posts returned
+                for post in p:
+                        if post.title == title:
+                                return(post.id)
+                offset = offset + increment
+        return(False)
 
-	while True:
-        	posts = client.call(posts.GetPosts({'number': increment, 'offset': offset}))
-        	if len(posts) == 0:
-                	break  # no more posts returned
-        	for post in posts:
-			if post.title == title:
-				return(post.id)
-        	offset = offset + increment
-	return(False)
 
 #Take text and replace words that match an array
 def replace_words(text, word_dic):
@@ -248,25 +251,14 @@ try:
 	}
 	
 	print "Post title : " + post.title
-	offset = 0
-	increment = 20
-	client = Client(wp_url, wp_username, wp_password)
-	while True:
-        	posts = client.call(posts.GetPosts({'number': increment, 'offset': offset}))
-        	if len(posts) == 0:
-                	break  # no more posts returned
-        	for post in posts:
-                	print "Post found!"
-        	offset = offset + increment
-	#post_id = find_id(post.title)
-	#if post_id:
-	#	print "Sorry, a post ID exists already with that title: ", post_id
-	#else:
-		#wp.call(NewPost(post))
+	post_id = find_id(post.title)
+	if post_id:
+		print "Sorry, a post ID exists already with that title: ", post_id
+	else:
 		#Output text to a post file to be eventually posted to wordpress	
-	#	template_out = open("/usr/local/bin/treb/python/treb-wordpress/metadata/" + mlsnumber + "_post.txt", "w")
-	#	template_out.write(post.content)
-	#	template_out.close()
+		template_out = open("/usr/local/bin/treb/python/treb-wordpress/metadata/" + mlsnumber + "_post.txt", "w")
+		template_out.write(post.content)
+		template_out.close()
 
         # If there's a sold date then just set the sold flag to 1
         #if [ "$solddate" = "" ]
