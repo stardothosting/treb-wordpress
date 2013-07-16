@@ -20,7 +20,6 @@
 
 
 import csv, sys, urllib, urlparse, string, time, locale, os, os.path, socket, re, requests, xmlrpclib
-#import wordpresslib
 import ConfigParser
 from datetime import date, timedelta
 from ftplib import FTP
@@ -30,11 +29,6 @@ from shutil import move
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
-#from wordpress_xmlrpc import *
-#from wordpress_xmlrpc import Client
-#from wordpress_xmlrpc.methods import posts
-#from wordpress_xmlrpc import WordPressPost
-#from wordpress_xmlrpc import WordPressPage
 
 # Read configuration file parameters
 Config = ConfigParser.ConfigParser()

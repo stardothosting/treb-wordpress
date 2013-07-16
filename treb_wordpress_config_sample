@@ -1,13 +1,13 @@
 [treb]
-agent_id: 1234567
+agent_id: 123456
 num_days: 1
-trebuser: trebuser
-trebpass: trebpass
-root_dir=/var/www/html/sitename.com
+trebuser: trebusername
+trebpass: trebpassword
+root_dir=/var/www/html/public_html
 
 [wordpress]
-wp_url=http://www.sitename.com/xmlrpc.php
-wp_username="admin"
-wp_password="wordpresspassword"
+wp_url=http://www.yoursite.com/xmlrpc.php
+wp_username=wpuser
+wp_password=wppassword
 user_perm: 500
-group_perm: 501 
+group_perm: 501
