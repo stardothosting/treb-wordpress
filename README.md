@@ -16,7 +16,7 @@ Installation and Integration Instructions
 
 Integrating and installation instructions for this python code can be found here :
 
-http://www.shift8web.com/blog/integrate-your-treb-listings-in-wordpress
+http://www.shift8web.com/blog/treb-wordpress-integration
 
 
 TO-DO Items
