@@ -1,6 +1,5 @@
 [treb]
 agent_id: 123456
-num_days: 1
 trebuser: trebusername
 trebpass: trebpassword
 root_dir=/var/www/html/public_html
