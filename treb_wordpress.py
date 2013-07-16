@@ -23,12 +23,13 @@ import csv, sys, urllib, urlparse, string, time, locale, os, os.path, socket, re
 import ConfigParser
 from datetime import date, timedelta
 from ftplib import FTP
-from  pygeocoder import Geocoder
+from pygeocoder import Geocoder
 from tempfile import mkstemp
 from shutil import move
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
+from wordpress_xmlrpc.methods import posts
 
 # Read configuration file parameters
 Config = ConfigParser.ConfigParser()
@@ -139,12 +140,12 @@ else:
 url = "http://3pv.torontomls.net/data3pv/DownLoad3PVAction.asp?user_code=" + user + "&password=" + password + "&sel_fields=*&dlDay=" + the_day + "&dlMonth=" + the_mon + "&dlYear=" + the_yr + "&order_by=&au_both=avail&dl_type=file&incl_names=yes&use_table=MLS&send_done=no&submit1=Submit&query_str=lud%3E%3D%27" + the_yr + the_mon + the_day + "%27"
 
 # retrieve URL and  write results to filename
-#filename = "out_py.txt"
-#urllib.urlretrieve(url,filename)
+filename = "/tmp/out_py.txt"
+urllib.urlretrieve(url,filename)
 
 
 # read the csv file
-f = open('../out_py.txt', 'r') #open file
+f = open('/tmp/out_py.txt', 'r') #open file
 try:
     r = csv.reader(f) #init csv reader
     r.next()
@@ -208,15 +209,15 @@ try:
     			os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
 
 		# GET The image files via FTP
-		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
-		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
-		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
-		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
-		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
-		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
-		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
-		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
-		#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
+		ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
 		
 		# Adjust permissions , change 33 to whatever GID/UID you need
 		os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
@@ -227,14 +228,14 @@ try:
                 print "No photos ..."
 
         # Generate post content from the template file
-	template_read = open("/usr/local/bin/treb/python/treb-wordpress/listing_template.txt", "r")
+	template_read = open("./listing_template.txt", "r")
 	template_text = template_read.read()
 	template_read.close()
 
 	#Replacements from the template
 	reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour}
 
-	# Check if the post exists first
+	# Prepare the post
 	wp = Client(wp_url, wp_username, wp_password)
 	post = WordPressPost()
 	post.title = address
@@ -244,28 +245,25 @@ try:
         'category': ['My Child Category'],
 	}
 	
+	# Check if post exists already
 	print "Post title : " + post.title
 	post_id = find_id(post.title)
 	if post_id:
-		print "Sorry, a post ID exists already with that title: ", post_id
+		# check if sold date variable is set and update existing post to reflect the property as sold
+		if solddate == "" :
+			print "Sorry, a post ID exists already with that title: ", post_id
+		else :
+			post.title = "[SOLD!] " + post.title
+			wp.call(posts.EditPost(post.id, post))
+			
 	else:
 		#Output text to a post file to be eventually posted to wordpress	
-		template_out = open("/usr/local/bin/treb/python/treb-wordpress/metadata/" + mlsnumber + "_post.txt", "w")
+		template_out = open("./metadata/" + mlsnumber + "_post.txt", "w")
 		template_out.write(post.content)
 		template_out.close()
-
-        # If there's a sold date then just set the sold flag to 1
-        #if [ "$solddate" = "" ]
-        #then
-                # Create posts or modify existing posts
-        #        /usr/bin/python $script_home/blogpost.py post $script_home/metadata/"$mlsnumber"_post.txt -U -d html --title="$streetnumber $streetname , Toronto" --categories="$listingcategory"
-
-        #else
-                # Create posts or modify existing posts
-        #        /usr/bin/python $script_home/blogpost.py post $script_home/metadata/"$mlsnumber"_post.txt -U -d html --title="[SOLD!] $streetnumber $streetname , Toronto" --categories="$listingcategory"
-
-        #fi
-
+		post.id = wp.call(NewPost(post))
+		post.post_status = 'publish'
+		wp.call(posts.EditPost(post.id, post))
 
 finally:
     f.close() #cleanup
