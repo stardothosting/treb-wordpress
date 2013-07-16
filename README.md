@@ -17,3 +17,14 @@ Installation and Integration Instructions
 Integrating and installation instructions for this python code can be found here :
 
 http://www.shift8web.com/blog/integrate-your-treb-listings-in-wordpress
+
+
+TO-DO Items
+===========
+
+Still to do :
+
+	- Better error checking , syntax error checking of option variables
+	- Available and unavailable listing processing
+	- Agent ID black list (for ensuring specific agents do not have listings processed by script)
+
