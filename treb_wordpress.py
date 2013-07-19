@@ -19,7 +19,7 @@
 #along with this program in the LICENSE file.  If not, see <http://www.gnu.org/licenses/>
 
 
-import csv, sys, urllib, urlparse, string, time, locale, os, os.path, socket, re, requests, xmlrpclib
+import csv, sys, urllib, urlparse, string, time, locale, os, os.path, socket, re, requests, xmlrpclib, errno
 import ConfigParser
 from datetime import date, timedelta
 from ftplib import FTP
@@ -121,6 +121,14 @@ def replace_words(text, word_dic):
 		return word_dic[match.group(0)]
 	return rc.sub(translate, text)
 
+#Silent way of removing a file if it already exists
+def silentremove(filename):
+    try:
+        os.remove(filename)
+    except OSError, e: # this would be "except OSError as e:" in python 3.x
+        if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
+            raise # re-raise exception if a different error occured
+
 #################
 # Functions END #
 #################
@@ -139,8 +147,8 @@ rootdir = ConfigSectionMap("treb")['root_dir']
 userperm = Config.getint('wordpress', 'user_perm')
 groupperm = Config.getint('wordpress', 'group_perm')
 exclude_agent = [ConfigSectionMap("treb")['agent_exclude']]
+filename = ConfigSectionMap("treb")['output_file']
 cur_path = os.getcwd()
-
 
 # declare variables based on arguments
 past_date = date.today() - timedelta(int_date)
@@ -160,7 +168,7 @@ else:
 url = "http://3pv.torontomls.net/data3pv/DownLoad3PVAction.asp?user_code=" + user + "&password=" + password + "&sel_fields=*&dlDay=" + the_day + "&dlMonth=" + the_mon + "&dlYear=" + the_yr + "&order_by=&au_both=" + avail_opt + "&dl_type=file&incl_names=yes&use_table=MLS&send_done=no&submit1=Submit&query_str=lud%3E%3D%27" + the_yr + the_mon + the_day + "%27"
 
 # retrieve URL and  write results to filename
-filename = "/tmp/out_py.txt"
+silentremove(filename)
 urllib.urlretrieve(url,filename)
 
 
@@ -168,7 +176,7 @@ urllib.urlretrieve(url,filename)
 if avail_opt == "avail":
 
 	# read the csv file
-	f = open('/tmp/out_py.txt', 'r') #open file
+	f = open(filename, 'r') #open file
 	try:
     		r = csv.reader(f) #init csv reader
     		r.next()
@@ -212,9 +220,11 @@ if avail_opt == "avail":
 					for excludeagent in exclude_agent:
 						if agentid == excludeagent:
 							print "Agent is in exclude list.. skipping"
-							continue
+							break
 						else:
                         				listingcategory = "OtherListings"
+							break
+					continue
 
  	       		# Get the latitude + longitude variables
 			results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
@@ -295,12 +305,13 @@ if avail_opt == "avail":
 				wp.call(posts.EditPost(post.id, post))
 	finally:
 		f.close() #cleanup
+		silentremove(filename)
 	
 	# Unavailable option
 elif avail_opt == "unavail" :
 
         # read the csv file
-        f = open('/tmp/out_py.txt', 'r') #open file
+        f = open(filename, 'r') #open file
         try:
                 r = csv.reader(f) #init csv reader
                 r.next()
@@ -317,6 +328,7 @@ elif avail_opt == "unavail" :
 
 	finally:
 		f.close() #cleanup
+		silentremove(filename)
 
 else :
 	print "Invalid command options given"
