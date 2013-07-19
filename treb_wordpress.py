@@ -232,7 +232,7 @@ if avail_opt == "avail":
 						print "Agent ID " + str(exclude) + "in exclude list, skipping .. "
 						continue
 					else:
-						print "Agent ID " + str(exclude) + "not in exclude list .. "
+						print "Agent ID " + str(agentid) + "not in exclude list .. "
 
  	       		# Get the latitude + longitude variables
 			results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
