@@ -130,10 +130,11 @@ def silentremove(file_name):
             raise # re-raise exception if a different error occured
 
 #Filter out agents from exclude list
-def ex_agent(aid, exlist = []):
-	for excludeagent in exlist:
+def ex_agent(aid, exlist):
+	exlist_in = exlist.split(',')
+	exlist_out = [', '.join(exlist_in[n:]) for n in range(len(exlist_in))]
+	for excludeagent in exlist_out:
 		if aid == excludeagent:
-			print "Agent is in exclude list.. skipping"
 			return(excludeagent)
 	return(False)		
 
@@ -141,7 +142,7 @@ def ex_agent(aid, exlist = []):
 #################
 # Functions END #
 #################
-	
+
 # Get Connection and Authentication  config data
 wp_url = ConfigSectionMap("wordpress")['wp_url']
 wp_username = ConfigSectionMap("wordpress")['wp_username']
@@ -155,7 +156,7 @@ avail_opt = sys.argv[1]
 rootdir = ConfigSectionMap("treb")['root_dir']
 userperm = Config.getint('wordpress', 'user_perm')
 groupperm = Config.getint('wordpress', 'group_perm')
-exclude_agent = [ConfigSectionMap("treb")['agent_exclude']]
+exclude_agent = ConfigSectionMap("treb")['agent_exclude']
 outfile = ConfigSectionMap("treb")['output_file']
 cur_path = os.getcwd()
 
@@ -165,8 +166,7 @@ the_day = past_date.strftime('%d')
 the_mon = past_date.strftime('%m')
 the_yr = past_date.strftime('%-Y')
 locale.setlocale(locale.LC_ALL, 'en_US.UTF8')
-
-
+	
 # check if slash was added to rootdir
 if rootdir.endswith('/'):
 	print "Slash detected in rootdir .."
@@ -223,7 +223,7 @@ if avail_opt == "avail":
                 		listingcategory = "Listings"
         		else:
 				if int(listprice) < min_listing:
-                        		print "Listing is below $" + str(min_listing) + "- Not adding"
+                        		print "Listing " + mlsnumber + " is below $" + str(min_listing) + " , Not adding"
                 			continue
                 		else:
 					# Check if agent is in exclude list
@@ -297,6 +297,7 @@ if avail_opt == "avail":
 	
 			# Check if post exists already
 			print "Post title : " + post.title
+			print "Checking if post exists .."
 			post_id = find_id(post.title)
 			if post_id:
 				# check if sold date variable is set and update existing post to reflect the property as sold
@@ -307,6 +308,7 @@ if avail_opt == "avail":
 					wp.call(posts.EditPost(post.id, post))
 			
 			else:
+				print "No existing duplicate post found .. posting to wordpress .."
 				#Output text to a post file to be eventually posted to wordpress	
 				template_out = open(cur_path + "/metadata/" + mlsnumber + "_post.txt", "w")
 				template_out.write(post.content)
