@@ -129,6 +129,15 @@ def silentremove(file_name):
         if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
             raise # re-raise exception if a different error occured
 
+#Filter out agents from exclude list
+def ex_agent(aid, exlist = []):
+	for excludeagent in exlist:
+		if aid == excludeagent:
+			print "Agent is in exclude list.. skipping"
+			return(excludeagent)
+	return(False)		
+
+
 #################
 # Functions END #
 #################
@@ -217,14 +226,13 @@ if avail_opt == "avail":
                         		print "Listing is below $" + str(min_listing) + "- Not adding"
                 			continue
                 		else:
-					for excludeagent in exclude_agent:
-						if agentid == excludeagent:
-							print "Agent is in exclude list.. skipping"
-							break
-						else:
-                        				listingcategory = "OtherListings"
-							break
-					continue
+					# Check if agent is in exclude list
+					exclude = ex_agent(agentid, exclude_agent)
+					if exclude:
+						print "Agent ID " + str(exclude) + "in exclude list, skipping .. "
+						continue
+					else:
+						print "Agent ID " + str(exclude) + "not in exclude list .. "
 
  	       		# Get the latitude + longitude variables
 			results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
@@ -248,6 +256,7 @@ if avail_opt == "avail":
     					os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
 
 				# GET The image files via FTP
+				print "Starting FTP connection to get listing photos .."
 				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
 				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
 				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
@@ -257,6 +266,7 @@ if avail_opt == "avail":
 				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
 				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
 				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+				print "FTP Download complete .."
 		
 				# Adjust permissions , change 33 to whatever GID/UID you need
 				os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
@@ -305,7 +315,7 @@ if avail_opt == "avail":
 				wp.call(posts.EditPost(post.id, post))
 	finally:
 		f.close() #cleanup
-		silentremove(outfile)
+		#silentremove(outfile)
 	
 	# Unavailable option
 elif avail_opt == "unavail" :
@@ -328,7 +338,7 @@ elif avail_opt == "unavail" :
 
 	finally:
 		f.close() #cleanup
-		silentremove(outfile)
+		#silentremove(outfile)
 
 else :
 	print "Invalid command options given"
