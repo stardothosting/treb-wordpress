@@ -3,6 +3,7 @@ agent_id: 123456
 trebuser: trebusername
 trebpass: trebpassword
 root_dir=/var/www/html/public_html
+minimum_listing: 600000
 
 [wordpress]
 wp_url=http://www.yoursite.com/xmlrpc.php

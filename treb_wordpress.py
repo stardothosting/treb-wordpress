@@ -132,6 +132,8 @@ wp_password = ConfigSectionMap("wordpress")['wp_password']
 user = ConfigSectionMap("treb")['trebuser']
 password = ConfigSectionMap("treb")['trebpass']
 agent_id = ConfigSectionMap("treb")['agent_id']
+min_listing = config.getint('treb', 'minimum_listing')
+
 #int_date = Config.getint('treb', 'num_days')
 int_date = int(sys.argv[1])
 avail_opt = int(sys.argv[0])
@@ -199,12 +201,12 @@ if avail_opt == "avail":
 			#virtualtour = virtualtour.replace(":", "\:").replace("/", "\/").replace("&", "\&")
 
 
-		# Set category and verify if other agent listing is over $600,0000
+		# Set category and verify if other agent listing is over minimum_listing in config file
 		if agentid == agent_id:
                 	listingcategory = "Listings"
         	else:
-			if int(listprice) < 600000:
-                        	print "Listing is below $600,000 - Not adding"
+			if int(listprice) < min_listing:
+                        	print "Listing is below $" + min_listing + "- Not adding"
                         	continue
                 	else:
                         	listingcategory = "OtherListings"
