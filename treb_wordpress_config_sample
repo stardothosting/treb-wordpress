@@ -4,6 +4,7 @@ trebuser: trebusername
 trebpass: trebpassword
 root_dir=/var/www/html/public_html
 minimum_listing: 600000
+agent_exclude:0000000,1111111
 
 [wordpress]
 wp_url=http://www.yoursite.com/xmlrpc.php

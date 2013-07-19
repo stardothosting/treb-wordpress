@@ -133,14 +133,14 @@ user = ConfigSectionMap("treb")['trebuser']
 password = ConfigSectionMap("treb")['trebpass']
 agent_id = ConfigSectionMap("treb")['agent_id']
 min_listing = Config.getint('treb', 'minimum_listing')
-
-#int_date = Config.getint('treb', 'num_days')
 int_date = int(sys.argv[2])
 avail_opt = sys.argv[1]
 rootdir = ConfigSectionMap("treb")['root_dir']
 userperm = Config.getint('wordpress', 'user_perm')
 groupperm = Config.getint('wordpress', 'group_perm')
+exclude_agent = [ConfigSectionMap("treb")['agent_exclude']]
 cur_path = os.getcwd()
+
 
 # declare variables based on arguments
 past_date = date.today() - timedelta(int_date)
@@ -209,7 +209,12 @@ if avail_opt == "avail":
                         		print "Listing is below $" + str(min_listing) + "- Not adding"
                 			continue
                 		else:
-                        		listingcategory = "OtherListings"
+					for excludeagent in exclude_agent:
+						if agentid == excludeagent:
+							print "Agent is in exclude list.. skipping"
+							continue
+						else:
+                        				listingcategory = "OtherListings"
 
  	       		# Get the latitude + longitude variables
 			results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
