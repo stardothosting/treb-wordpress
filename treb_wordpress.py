@@ -76,7 +76,7 @@ def ftpget( hostname, localpath, remotepath, filename ) :
                 ftp.retrbinary("RETR " + filename,f.write)
         except:
                 print "File not found.. exiting .."
-                silentremove(filename)
+                os.remove(filename)
         try:
                 ftp.close()
         except:
@@ -318,7 +318,7 @@ if avail_opt == "avail":
 				wp.call(posts.EditPost(post.id, post))
 	finally:
 		f.close() #cleanup
-		#silentremove(outfile)
+		silentremove(outfile)
 	
 	# Unavailable option
 elif avail_opt == "unavail" :
@@ -341,7 +341,7 @@ elif avail_opt == "unavail" :
 
 	finally:
 		f.close() #cleanup
-		#silentremove(outfile)
+		silentremove(outfile)
 
 else :
 	print "Invalid command options given"
