@@ -38,4 +38,4 @@
 %DESCRIPTION%
 [/box]
 <br /><br />
-[google-map-v3 width="500" height="250" zoom="15" maptype="roadmap" mapalign="center" directionhint="false" language="default" poweredby="false" maptypecontrol="true" pancontrol="true" zoomcontrol="true" scalecontrol="true" streetviewcontrol="true" scrollwheelcontrol="false" draggable="true" tiltfourtyfive="false" addmarkermashupbubble="false" addmarkermashupbubble="false" addmarkerlist="%STREETNUMBER% %STREETNAME%, toronto ontario %POSTALCODE%{}1-default.png" bubbleautopan="true" showbike="false" showtraffic="false" showpanoramio="false"]
+[google-map-v3 width="500" height="250" zoom="15" maptype="roadmap" mapalign="center" directionhint="false" language="default" poweredby="false" maptypecontrol="true" pancontrol="true" zoomcontrol="true" scalecontrol="true" streetviewcontrol="true" scrollwheelcontrol="false" draggable="true" tiltfourtyfive="false" addmarkermashupbubble="false" addmarkermashupbubble="false" addmarkerlist="%STREETNUMBER% %STREETNAME%, toronto ontario %POSTALCODE%" bubbleautopan="true" showbike="false" showtraffic="false" showpanoramio="false"]
