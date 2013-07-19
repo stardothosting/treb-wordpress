@@ -19,7 +19,7 @@
 #along with this program in the LICENSE file.  If not, see <http://www.gnu.org/licenses/>
 
 
-import csv, sys, urllib, urlparse, string, time, locale, os, os.path, socket, re, requests, xmlrpclib, errno
+import csv, sys, urllib, urlparse, string, time, locale, os, os.path, socket, re, requests, xmlrpclib,errno
 import ConfigParser
 from datetime import date, timedelta
 from ftplib import FTP
@@ -76,7 +76,7 @@ def ftpget( hostname, localpath, remotepath, filename ) :
                 ftp.retrbinary("RETR " + filename,f.write)
         except:
                 print "File not found.. exiting .."
-                os.remove(filename)
+                silentremove(filename)
         try:
                 ftp.close()
         except:
@@ -122,9 +122,9 @@ def replace_words(text, word_dic):
 	return rc.sub(translate, text)
 
 #Silent way of removing a file if it already exists
-def silentremove(filename):
+def silentremove(file_name):
     try:
-        os.remove(filename)
+        os.remove(file_name)
     except OSError, e: # this would be "except OSError as e:" in python 3.x
         if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
             raise # re-raise exception if a different error occured
