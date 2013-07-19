@@ -132,11 +132,11 @@ wp_password = ConfigSectionMap("wordpress")['wp_password']
 user = ConfigSectionMap("treb")['trebuser']
 password = ConfigSectionMap("treb")['trebpass']
 agent_id = ConfigSectionMap("treb")['agent_id']
-min_listing = config.getint('treb', 'minimum_listing')
+min_listing = Config.getint('treb', 'minimum_listing')
 
 #int_date = Config.getint('treb', 'num_days')
-int_date = int(sys.argv[1])
-avail_opt = int(sys.argv[0])
+int_date = int(sys.argv[2])
+avail_opt = sys.argv[1]
 rootdir = ConfigSectionMap("treb")['root_dir']
 userperm = Config.getint('wordpress', 'user_perm')
 groupperm = Config.getint('wordpress', 'group_perm')
@@ -202,92 +202,92 @@ if avail_opt == "avail":
 
 
 		# Set category and verify if other agent listing is over minimum_listing in config file
-		if agentid == agent_id:
-                	listingcategory = "Listings"
-        	else:
-			if int(listprice) < min_listing:
-                        	print "Listing is below $" + min_listing + "- Not adding"
-                        	continue
-                	else:
-                        	listingcategory = "OtherListings"
+			if agentid == agent_id:
+                		listingcategory = "Listings"
+        		else:
+				if int(listprice) < min_listing:
+                        		print "Listing is below $" + min_listing + "- Not adding"
+                			continue
+                		else:
+                        		listingcategory = "OtherListings"
 
-        	# Get the latitude + longitude variables
-		results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
-		lat, lng = results[0].coordinates	
-		lat = str(lat)
-		lng = str(lng)
+ 	       		# Get the latitude + longitude variables
+			results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
+			lat, lng = results[0].coordinates	
+			lat = str(lat)
+			lng = str(lng)
 
-        	# Set variable for virtual tour
-		if virtualtour == "":
-			virtualtour = "N/A"
-		else:
-			virtualtour = "<a href=\"" + virtualtour + "\" target=\"_new\"><b>Click here for virtual tour</b></a>"
+        		# Set variable for virtual tour
+			if virtualtour == "":
+				virtualtour = "N/A"
+			else:
+				virtualtour = "<a href=\"" + virtualtour + "\" target=\"_new\"><b>Click here for virtual tour</b></a>"
 
-		# Start prepping the uploads folder for the MLS listing images
-		if pictures == "Y":
-			mlsimage = mlsnumber[-3:]
-			print "MLS Image : " + mlsimage
+			# Start prepping the uploads folder for the MLS listing images
+			if pictures == "Y":
+				mlsimage = mlsnumber[-3:]
+				print "MLS Image : " + mlsimage
 
-			# Create upload folder if it doesnt exist
-			if not os.path.exists(rootdir + '/wp-content/uploads/treb/' + mlsnumber):
-    				os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
+				# Create upload folder if it doesnt exist
+				if not os.path.exists(rootdir + '/wp-content/uploads/treb/' + mlsnumber):
+    					os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
 
-			# GET The image files via FTP
-			ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
-			ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
-			ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
-			ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
-			ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
-			ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
-			ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
-			ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
-			ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+				# GET The image files via FTP
+				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
+				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
+				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
+				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
+				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
+				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
+				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
+				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
+				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
 		
-			# Adjust permissions , change 33 to whatever GID/UID you need
-			os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
-			for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
-				for filename in files:
-					os.chown(os.path.join(root, filename), userperm, groupperm)
-        	else:
-                	print "No photos ..."
+				# Adjust permissions , change 33 to whatever GID/UID you need
+				os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
+				for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
+					for filename in files:
+						os.chown(os.path.join(root, filename), userperm, groupperm)
+        		else:
+                		print "No photos ..."
 
-        	# Generate post content from the template file
-		template_read = open("./listing_template.txt", "r")
-		template_text = template_read.read()
-		template_read.close()
+        		# Generate post content from the template file
+			template_read = open("./listing_template.txt", "r")
+			template_text = template_read.read()
+			template_read.close()
 
-		#Replacements from the template
-		reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour}
+			#Replacements from the template
+			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour}
 
-		# Prepare the post
-		wp = Client(wp_url, wp_username, wp_password)
-		post = WordPressPost()
-		post.title = address
-		post.content = replace_words(template_text, reps)
-		post.terms_names = {
-        	'post_tag': [mlsnumber],
-        	'category': ['My Child Category'],
-		}
+			# Prepare the post
+			wp = Client(wp_url, wp_username, wp_password)
+			post = WordPressPost()
+			post.title = address
+			post.content = replace_words(template_text, reps)
+			post.terms_names = {
+        		'post_tag': [mlsnumber],
+        		'category': ['My Child Category'],
+			}
 	
-		# Check if post exists already
-		print "Post title : " + post.title
-		post_id = find_id(post.title)
-		if post_id:
-			# check if sold date variable is set and update existing post to reflect the property as sold
-			if solddate == "" :
-				print "Sorry, a post ID exists already with that title: ", post_id
-			else :
-				post.title = "[SOLD!] " + post.title
-				wp.call(posts.EditPost(post.id, post))
+			# Check if post exists already
+			print "Post title : " + post.title
+			post_id = find_id(post.title)
+			if post_id:
+				# check if sold date variable is set and update existing post to reflect the property as sold
+				if solddate == "" :
+					print "Sorry, a post ID exists already with that title: ", post_id
+				else :
+					post.title = "[SOLD!] " + post.title
+					wp.call(posts.EditPost(post.id, post))
 			
-		else:
-			#Output text to a post file to be eventually posted to wordpress	
-			template_out = open("./metadata/" + mlsnumber + "_post.txt", "w")
-			template_out.write(post.content)
-			template_out.close()
-			post.id = wp.call(NewPost(post))
-			post.post_status = 'publish'
-			wp.call(posts.EditPost(post.id, post))
+			else:
+				#Output text to a post file to be eventually posted to wordpress	
+				template_out = open("./metadata/" + mlsnumber + "_post.txt", "w")
+				template_out.write(post.content)
+				template_out.close()
+				post.id = wp.call(NewPost(post))
+				post.post_status = 'publish'
+				wp.call(posts.EditPost(post.id, post))
 	finally:
 		f.close() #cleanup
 	
@@ -302,13 +302,13 @@ elif avail_opt == "unavail" :
                 for row in r:
                         mlsnumber = row[1]
 		
-	# Prepare post title for search
-	wp = Client(wp_url, wp_username, wp_password)
-	unavail_id = unlist_mls(mlsnumber)
-	if unavail_id : 
-		print "The following post ID has been unpublished : " + unavail_id
-	else
-		print "No matches for any posts with the MLS " + mlsnumber
+		# Prepare post title for search
+		wp = Client(wp_url, wp_username, wp_password)
+		unavail_id = unlist_mls(mlsnumber)
+		if unavail_id : 
+			print "The following post ID has been unpublished : " + unavail_id
+		else :
+			print "No matches for any posts with the MLS " + mlsnumber
 
 	finally:
 		f.close() #cleanup
