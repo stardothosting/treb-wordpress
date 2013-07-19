@@ -140,6 +140,7 @@ avail_opt = sys.argv[1]
 rootdir = ConfigSectionMap("treb")['root_dir']
 userperm = Config.getint('wordpress', 'user_perm')
 groupperm = Config.getint('wordpress', 'group_perm')
+cur_path = os.getcwd()
 
 # declare variables based on arguments
 past_date = date.today() - timedelta(int_date)
@@ -205,7 +206,7 @@ if avail_opt == "avail":
                 		listingcategory = "Listings"
         		else:
 				if int(listprice) < min_listing:
-                        		print "Listing is below $" + min_listing + "- Not adding"
+                        		print "Listing is below $" + str(min_listing) + "- Not adding"
                 			continue
                 		else:
                         		listingcategory = "OtherListings"
@@ -251,7 +252,7 @@ if avail_opt == "avail":
                 		print "No photos ..."
 
         		# Generate post content from the template file
-			template_read = open("./listing_template.txt", "r")
+			template_read = open(cur_path + "/listing_template.txt", "r")
 			template_text = template_read.read()
 			template_read.close()
 
@@ -265,7 +266,7 @@ if avail_opt == "avail":
 			post.content = replace_words(template_text, reps)
 			post.terms_names = {
         		'post_tag': [mlsnumber],
-        		'category': ['My Child Category'],
+        		'category': [listingcategory],
 			}
 	
 			# Check if post exists already
@@ -281,7 +282,7 @@ if avail_opt == "avail":
 			
 			else:
 				#Output text to a post file to be eventually posted to wordpress	
-				template_out = open("./metadata/" + mlsnumber + "_post.txt", "w")
+				template_out = open(cur_path + "/metadata/" + mlsnumber + "_post.txt", "w")
 				template_out.write(post.content)
 				template_out.close()
 				post.id = wp.call(NewPost(post))
