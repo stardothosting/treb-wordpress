@@ -154,7 +154,6 @@ if rootdir.endswith('/'):
 	print "Slash detected in rootdir .."
 else:
 	rootdir = rootdir + "/"
-	print rootdir
 
 # build the url query string
 url = "http://3pv.torontomls.net/data3pv/DownLoad3PVAction.asp?user_code=" + user + "&password=" + password + "&sel_fields=*&dlDay=" + the_day + "&dlMonth=" + the_mon + "&dlYear=" + the_yr + "&order_by=&au_both=" + avail_opt + "&dl_type=file&incl_names=yes&use_table=MLS&send_done=no&submit1=Submit&query_str=lud%3E%3D%27" + the_yr + the_mon + the_day + "%27"
