@@ -147,7 +147,7 @@ rootdir = ConfigSectionMap("treb")['root_dir']
 userperm = Config.getint('wordpress', 'user_perm')
 groupperm = Config.getint('wordpress', 'group_perm')
 exclude_agent = [ConfigSectionMap("treb")['agent_exclude']]
-filename = ConfigSectionMap("treb")['output_file']
+outfile = ConfigSectionMap("treb")['output_file']
 cur_path = os.getcwd()
 
 # declare variables based on arguments
@@ -168,15 +168,15 @@ else:
 url = "http://3pv.torontomls.net/data3pv/DownLoad3PVAction.asp?user_code=" + user + "&password=" + password + "&sel_fields=*&dlDay=" + the_day + "&dlMonth=" + the_mon + "&dlYear=" + the_yr + "&order_by=&au_both=" + avail_opt + "&dl_type=file&incl_names=yes&use_table=MLS&send_done=no&submit1=Submit&query_str=lud%3E%3D%27" + the_yr + the_mon + the_day + "%27"
 
 # retrieve URL and  write results to filename
-silentremove(filename)
-urllib.urlretrieve(url,filename)
+silentremove(outfile)
+urllib.urlretrieve(url,outfile)
 
 
 # Available or Unavailable Listing Logic
 if avail_opt == "avail":
 
 	# read the csv file
-	f = open(filename, 'r') #open file
+	f = open(outfile, 'r') #open file
 	try:
     		r = csv.reader(f) #init csv reader
     		r.next()
@@ -305,13 +305,13 @@ if avail_opt == "avail":
 				wp.call(posts.EditPost(post.id, post))
 	finally:
 		f.close() #cleanup
-		silentremove(filename)
+		silentremove(outfile)
 	
 	# Unavailable option
 elif avail_opt == "unavail" :
 
         # read the csv file
-        f = open(filename, 'r') #open file
+        f = open(outfile, 'r') #open file
         try:
                 r = csv.reader(f) #init csv reader
                 r.next()
@@ -328,7 +328,7 @@ elif avail_opt == "unavail" :
 
 	finally:
 		f.close() #cleanup
-		silentremove(filename)
+		silentremove(outfile)
 
 else :
 	print "Invalid command options given"
