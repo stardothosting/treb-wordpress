@@ -26,7 +26,7 @@ from ftplib import FTP
 from pygeocoder import Geocoder
 from tempfile import mkstemp
 from shutil import move
-from wordpress_xmlrpc import Client, WordPressPost
+from wordpress_xmlrpc import Client, WordPressPost, WordPressOption
 from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
 from wordpress_xmlrpc.methods.users import GetUserInfo
 from wordpress_xmlrpc.methods import posts
@@ -161,7 +161,8 @@ outfile = ConfigSectionMap("treb")['output_file']
 cur_path = os.getcwd()
 
 # Get blog URL
-wp_site = WordPressBlog()
+wp_site = Client(wp_url, wp_username, wp_password)
+siteurl = wp_site.call(options.GetOptions(['home_url']))[0].value
 
 
 # declare variables based on arguments
@@ -287,7 +288,7 @@ if avail_opt == "avail":
 			template_read.close()
 
 			#Replacements from the template
-			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':wp_site.url}
+			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl}
 
 			# Prepare the post
 			wp = Client(wp_url, wp_username, wp_password)
