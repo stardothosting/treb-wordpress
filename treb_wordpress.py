@@ -160,6 +160,10 @@ exclude_agent = ConfigSectionMap("treb")['agent_exclude']
 outfile = ConfigSectionMap("treb")['output_file']
 cur_path = os.getcwd()
 
+# Get blog URL
+wp_site = WordPressBlog()
+
+
 # declare variables based on arguments
 past_date = date.today() - timedelta(int_date)
 the_day = past_date.strftime('%d')
@@ -283,7 +287,7 @@ if avail_opt == "avail":
 			template_read.close()
 
 			#Replacements from the template
-			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour}
+			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':wp_site.url}
 
 			# Prepare the post
 			wp = Client(wp_url, wp_username, wp_password)
