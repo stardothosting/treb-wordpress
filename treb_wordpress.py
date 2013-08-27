@@ -161,6 +161,7 @@ groupperm = Config.getint('wordpress', 'group_perm')
 exclude_agent = ConfigSectionMap("treb")['agent_exclude']
 outfile = ConfigSectionMap("treb")['output_file']
 cur_path = os.getcwd()
+phonemsg = ConfigSectionMap("treb")['phone_msg']
 
 # Get blog URL
 wp_site = Client(wp_url, wp_username, wp_password)
@@ -290,7 +291,7 @@ if avail_opt == "avail":
 			template_read.close()
 
 			#Replacements from the template
-			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl}
+			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMESSAGE%':phonemsg}
 
 			# Prepare the post
 			wp = Client(wp_url, wp_username, wp_password)

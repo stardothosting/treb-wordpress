@@ -2,7 +2,7 @@
 <br />
 [lg_folder folder="%MLSNUMBER%/" caption="%STREETNUMBER% %STREETNAME%"]
 [box style="comment"]
-<a href="%WPBLOG%/contact-us">CLICK HERE</a> to contact, or Call 416-000-0000 
+%PHONEMESSAGE%
 [/box]
 <table border="0" width="80%">
 <tr>
