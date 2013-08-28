@@ -105,13 +105,13 @@ def unlist_mls(mlsnum):
 	increment = 20
 	while True:
         	filter = { 'offset' : offset }
-        	p = client.call(GetPosts(filter))
+        	p = wp.call(GetPosts(filter))
         	if len(p) == 0:
                 	break # no more posts returned
         	for post in p:
                 	if post.content.find(mlsnum) != -1:
                         	post.post_status = 'unpublish'
-                        	client.call(posts.EditPost(post.id, post))
+                        	wp.call(posts.EditPost(post.id, post))
 				return(post.id)
         	offset = offset + increment
 	return(False)
