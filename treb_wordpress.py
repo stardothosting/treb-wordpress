@@ -98,20 +98,21 @@ def ftpget( hostname, localpath, remotepath, filename ) :
 #Searches wordpress posts based on title
 #def find_id(title):
 def find_id(tag):
-        offset = 0
-        increment = 20
-        while True:
-                filter = { 'offset' : offset }
+     #   offset = 0
+     #   increment = 20
+     #   while True:
+     #           filter = { 'offset' : offset }
                 #p = wp.call(GetPosts(filter))
-                p = wp.call(taxonomies.GetTerms('post_tag'))
-                if len(p) == 0:
-                        break # no more posts returned
-                for thetags in p:
-                    print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
-                    if str(thetags) in tag:
-                        return(True)
-                offset = offset + increment
-        return(False)
+     p = wp.call(taxonomies.GetTerms('post_tag'))
+     if len(p) == 0:
+          return(False)
+     #    break # no more posts returned
+     for thetags in p:
+         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
+         if str(thetags) in tag:
+            return(True)
+     #           offset = offset + increment
+     return(False)
 
 #Searches wordpress post content for MLS number (or anything else)
 def unlist_mls(mlsnum):
