@@ -107,6 +107,7 @@ def find_id(tag):
                 if len(p) == 0:
                         break # no more posts returned
                 for thetags in p:
+                    print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
                     if str(thetags) in tag:
                         return(True)
                 offset = offset + increment
@@ -278,23 +279,23 @@ if avail_opt == "avail":
     					os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
 
 				# GET The image files via FTP
-				print "Starting FTP connection to get listing photos .."
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
-				print "FTP Download complete .."
+				#print "Starting FTP connection to get listing photos .."
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+				#print "FTP Download complete .."
 		
 				# Adjust permissions , change 33 to whatever GID/UID you need
-				os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
-				for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
-					for filename in files:
-						os.chown(os.path.join(root, filename), userperm, groupperm)
+				#os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
+				#for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
+				#	for filename in files:
+				#		os.chown(os.path.join(root, filename), userperm, groupperm)
         		else:
                 		print "No photos ..."
 
@@ -331,6 +332,24 @@ if avail_opt == "avail":
 			
 			else:
 				print "No existing duplicate post found .. posting to wordpress .."
+                                # GET The image files via FTP
+                                print "Starting FTP connection to get listing photos .."
+                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
+                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
+                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
+                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
+                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
+                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
+                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
+                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
+                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+                                print "FTP Download complete .."
+
+                                # Adjust permissions , change 33 to whatever GID/UID you need
+                                os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
+                                for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
+                                        for filename in files:
+                                                os.chown(os.path.join(root, filename), userperm, groupperm)
 				#Output text to a post file to be eventually posted to wordpress	
 				template_out = open(cur_path + "/metadata/" + mlsnumber + "_post.txt", "w")
 				template_out.write(post.content)
