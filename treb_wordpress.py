@@ -27,11 +27,22 @@ from pygeocoder import Geocoder
 from tempfile import mkstemp
 from shutil import move
 from wordpress_xmlrpc import Client, WordPressPost
-from wordpress_xmlrpc.methods import options
-from wordpress_xmlrpc.wordpress import WordPressOption
-from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
-from wordpress_xmlrpc.methods.users import GetUserInfo
-from wordpress_xmlrpc.methods import posts
+#from wordpress_xmlrpc.methods.taxonomies import *
+#from wordpress_xmlrpc.methods import options
+#from wordpress_xmlrpc.wordpress import WordPressOption
+#from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
+#from wordpress_xmlrpc.methods.users import GetUserInfo
+#from wordpress_xmlrpc.methods import posts
+
+#from wordpress_xmlrpc import *
+from wordpress_xmlrpc.methods.taxonomies import *
+from wordpress_xmlrpc.methods.posts import *
+from wordpress_xmlrpc.methods.users import *
+from wordpress_xmlrpc.methods import *
+
+
+# debug
+import pprint 
 
 # Read configuration file parameters
 Config = ConfigParser.ConfigParser()
@@ -85,17 +96,20 @@ def ftpget( hostname, localpath, remotepath, filename ) :
                 print "Error closing FTP connection ..."
 
 #Searches wordpress posts based on title
-def find_id(title):
+#def find_id(title):
+def find_id(tag):
         offset = 0
         increment = 20
         while True:
                 filter = { 'offset' : offset }
-                p = wp.call(GetPosts(filter))
+                #p = wp.call(GetPosts(filter))
+                #p = wp.call(taxonomies.GetTaxonomies())
+                p = wp.call(taxonomies.GetTerms('post_tag'))
                 if len(p) == 0:
                         break # no more posts returned
-                for post in p:
-                        if post.title == title:
-                                return(post.id)
+                for thetags in p:
+                    if str(thetags) in tag:
+                        return(post.id)
                 offset = offset + increment
         return(False)
 
@@ -266,15 +280,15 @@ if avail_opt == "avail":
 
 				# GET The image files via FTP
 				print "Starting FTP connection to get listing photos .."
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
-				ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
+				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
 				print "FTP Download complete .."
 		
 				# Adjust permissions , change 33 to whatever GID/UID you need
@@ -306,7 +320,8 @@ if avail_opt == "avail":
 			# Check if post exists already
 			print "Post title : " + post.title
 			print "Checking if post exists .."
-			post_id = find_id(post.title)
+			#post_id = find_id(post.title)
+			post_id = find_id(mlsnumber)
 			if post_id:
 				# check if sold date variable is set and update existing post to reflect the property as sold
 				if solddate == "" :
@@ -349,7 +364,7 @@ elif avail_opt == "unavail" :
 
 	finally:
 		f.close() #cleanup
-		silentremove(outfile)
+#		silentremove(outfile)
 
 else :
 	print "Invalid command options given"
