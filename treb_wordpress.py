@@ -103,13 +103,12 @@ def find_id(tag):
         while True:
                 filter = { 'offset' : offset }
                 #p = wp.call(GetPosts(filter))
-                #p = wp.call(taxonomies.GetTaxonomies())
                 p = wp.call(taxonomies.GetTerms('post_tag'))
                 if len(p) == 0:
                         break # no more posts returned
                 for thetags in p:
                     if str(thetags) in tag:
-                        return(post.id)
+                        return(True)
                 offset = offset + increment
         return(False)
 
@@ -325,7 +324,7 @@ if avail_opt == "avail":
 			if post_id:
 				# check if sold date variable is set and update existing post to reflect the property as sold
 				if solddate == "" :
-					print "Sorry, a post ID exists already with that title: ", post_id
+					print "Sorry, a post ID exists already"
 				else :
 					post.title = "[SOLD!] " + post.title
 					wp.call(posts.EditPost(post.id, post))
