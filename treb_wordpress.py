@@ -115,21 +115,17 @@ def find_id(tag):
      return(False)
 
 #Searches wordpress post content for MLS number (or anything else)
-def unlist_mls(mlsnum):
-	offset = 0
-	increment = 20
-	while True:
-        	filter = { 'offset' : offset }
-        	p = wp.call(GetPosts(filter))
-        	if len(p) == 0:
-                	break # no more posts returned
-        	for post in p:
-                	if post.content.find(mlsnum) != -1:
-                        	post.post_status = 'unpublish'
-                        	wp.call(posts.EditPost(post.id, post))
-				return(post.id)
-        	offset = offset + increment
-	return(False)
+def unlist_mls(tag):
+     p = wp.call(taxonomies.GetTerms('post_tag'))
+     if len(p) == 0:
+          return(False)
+     for thetags in p:
+         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
+         if str(thetags) in tag:
+             post.post_status = 'unpublish'
+             wp.call(posts.EditPost(post.id, post))
+             return(True)
+     return(False)
 
 #Take text and replace words that match an array
 def replace_words(text, word_dic):
@@ -377,7 +373,7 @@ elif avail_opt == "unavail" :
 		wp = Client(wp_url, wp_username, wp_password)
 		unavail_id = unlist_mls(mlsnumber)
 		if unavail_id : 
-			print "The following post ID has been unpublished : " + unavail_id
+			print "The following post has been unpublished : " + mlsnumber 
 		else :
 			print "No matches for any posts with the MLS " + mlsnumber
 
