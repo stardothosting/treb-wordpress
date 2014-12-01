@@ -27,19 +27,14 @@ from pygeocoder import Geocoder
 from tempfile import mkstemp
 from shutil import move
 from wordpress_xmlrpc import Client, WordPressPost
-#from wordpress_xmlrpc.methods.taxonomies import *
-#from wordpress_xmlrpc.methods import options
-#from wordpress_xmlrpc.wordpress import WordPressOption
-#from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
-#from wordpress_xmlrpc.methods.users import GetUserInfo
-#from wordpress_xmlrpc.methods import posts
-
-#from wordpress_xmlrpc import *
 from wordpress_xmlrpc.methods.taxonomies import *
 from wordpress_xmlrpc.methods.posts import *
 from wordpress_xmlrpc.methods.users import *
 from wordpress_xmlrpc.methods import *
 
+#twitter
+import tweepy
+import bitlyapi
 
 # debug
 import pprint 
@@ -108,7 +103,7 @@ def find_id(tag):
           return(False)
      #    break # no more posts returned
      for thetags in p:
-         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
+#         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
          #print 'tag count : ' , thetags.count
          if thetags.count >= 1:
              if str(thetags) in tag:
@@ -122,7 +117,7 @@ def unlist_mls(tag):
      if len(p) == 0:
           return(False)
      for thetags in p:
-         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
+#         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
          if thetags.count >= 1:
              if str(thetags) in tag:
                  post.post_status = 'unpublish'
@@ -176,6 +171,15 @@ exclude_agent = ConfigSectionMap("treb")['agent_exclude']
 outfile = ConfigSectionMap("treb")['output_file']
 cur_path = os.getcwd()
 phonemsg = ConfigSectionMap("treb")['phone_msg']
+tw_enabled = ConfigSectionMap("twitter")['enabled']
+if tw_enabled == "true":
+    tw_consumer = ConfigSectionMap("twitter")['consumer']
+    tw_secret = ConfigSectionMap("twitter")['secret']
+    tw_token = ConfigSectionMap("twitter")['access_token']
+    tw_token_secret = ConfigSectionMap("twitter")['access_token_secret']
+    tw_hashtags = ConfigSectionMap("twitter")['hashtags']
+    tw_bitlyuser = ConfigSectionMap("twitter")['bitly_user']
+    tw_bitlykey = ConfigSectionMap("twitter")['bitly_key']
 
 # Get blog URL
 wp_site = Client(wp_url, wp_username, wp_password)
@@ -329,7 +333,6 @@ if avail_opt == "avail":
 				else :
 					post.title = "[SOLD!] " + post.title
 					wp.call(posts.EditPost(post.id, post))
-			
 			else:
 				print "No existing duplicate post found .. posting to wordpress .."
                                 # GET The image files via FTP
@@ -357,6 +360,30 @@ if avail_opt == "avail":
 				post.id = wp.call(NewPost(post))
 				post.post_status = 'publish'
 				wp.call(posts.EditPost(post.id, post))
+                                post_link = wp.call(posts.GetPost(post.id))
+                                if tw_enabled == "true":
+                                    print "Posting to twitter .."
+                                    auth = tweepy.OAuthHandler(tw_consumer, tw_secret)
+                                    auth.set_access_token(tw_token, tw_token_secret)
+                                    api = tweepy.API(auth)
+                                    b = bitlyapi.BitLy(tw_bitlyuser, tw_bitlykey)
+                                    tweet = 'New Listing : ' , address , ' , ' , listpricefix , ' , ' , bedrooms , ' beds ' , bathrooms , ' baths '
+                                    hashtag_list = tw_hashtags.split(',')
+                                    for hash in hashtag_list:
+                                        tweet += '#', hash , ' '
+                                    tweet_fixed = ''.join(str(e) for e in tweet)
+                                    try:
+                                        bitly_url = b.shorten(longUrl=post_link.link)
+                                    except Exception, e:
+                                        print 'Bitly error : ' + str(e)
+                                        bitly_url = '' 
+                                    tweet_fixed += ' ' + str(bitly_url['url'])
+                                    #pprint.pprint(bitly_url['url'])
+                                    try: 
+                                        api.update_status(tweet_fixed[:140])
+                                #        pprint.pprint(tweet_fixed[:140])
+                                    except Exception, e:
+                                        print 'Twitter error : ' + str(e)
 	finally:
 		f.close() #cleanup
 		silentremove(outfile)

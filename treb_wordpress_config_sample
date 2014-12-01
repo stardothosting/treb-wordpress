@@ -14,3 +14,13 @@ wp_username=wpuser
 wp_password=wppassword
 user_perm: 500
 group_perm: 501
+
+[twitter]
+enabled: false
+consumer: 
+secret: 
+access_token:
+access_token_secret:
+hashtags: 
+bitly_user:
+bitly_key:
