@@ -16,7 +16,7 @@ Installation and Integration Instructions
 
 Integrating and installation instructions for this python code can be found here :
 
-http://www.shift8web.com/blog/treb-idx-wordpress-integration/
+http://www.shift8web.ca/blog/treb-idx-wordpress-integration/
 
 
 TO-DO Items
