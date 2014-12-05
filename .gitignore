@@ -1,2 +1,4 @@
 metadata
 .treb_wordpress
+.treb_wordpress.py.swp
+*.swp
