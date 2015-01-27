@@ -143,12 +143,12 @@ def silentremove(file_name):
 
 #Filter out agents from exclude list
 def ex_agent(aid, exlist):
-	exlist_in = exlist.split(',')
-	exlist_out = [', '.join(exlist_in[n:]) for n in range(len(exlist_in))]
-	for excludeagent in exlist_out:
-		if aid == excludeagent:
-			return(excludeagent)
-	return(False)		
+    exlist_in = exlist.split(',')
+    #exlist_out = [', '.join(exlist_in[n:]) for n in range(len(exlist_in))]
+    for excludeagent in exlist_in:
+         if str(aid) == str(excludeagent):
+             return(excludeagent)
+    return(False)
 
 
 #################
@@ -202,6 +202,9 @@ else:
 
 # build the url query string
 url = "http://3pv.torontomls.net/data3pv/DownLoad3PVAction.asp?user_code=" + user + "&password=" + password + "&sel_fields=*&dlDay=" + the_day + "&dlMonth=" + the_mon + "&dlYear=" + the_yr + "&order_by=&au_both=" + avail_opt + "&dl_type=file&incl_names=yes&use_table=MLS&send_done=no&submit1=Submit&query_str=lud%3E%3D%27" + the_yr + the_mon + the_day + "%27"
+
+#print url
+#sys.exit()
 
 # retrieve URL and  write results to filename
 silentremove(outfile)
