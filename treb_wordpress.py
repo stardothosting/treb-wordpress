@@ -144,10 +144,17 @@ def silentremove(file_name):
 #Filter out agents from exclude list
 def ex_agent(aid, exlist):
     exlist_in = exlist.split(',')
-    #exlist_out = [', '.join(exlist_in[n:]) for n in range(len(exlist_in))]
     for excludeagent in exlist_in:
          if str(aid) == str(excludeagent):
              return(excludeagent)
+    return(False)
+
+#Filter out agent ids from include or agent match
+def is_agent(aid, inlist):
+    inlist_in = inlist.split(',')
+    for includeagent in inlist_in:
+         if str(aid) == str(includeagent):
+             return(includeagent)
     return(False)
 
 
@@ -249,7 +256,9 @@ if avail_opt == "avail":
 
 
 		# Set category and verify if other agent listing is over minimum_listing in config file
-			if agentid == agent_id:
+                        include = is_agent(agentid, agent_id)
+			#if agentid == agent_id:
+                        if include: 
                 		listingcategory = "Listings"
         		else:
 				if int(listprice) < min_listing:
