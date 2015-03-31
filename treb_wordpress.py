@@ -40,6 +40,13 @@ import bitlyapi
 # debug
 import pprint 
 
+# testing
+from xmlrpclib import Transport
+import wordpress_xmlrpc
+
+class SpecialTransport(Transport):
+    user_agent = 'Mozilla/5.0 (Windows NT 6.0) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.43 Safari/537.31'
+
 # Read configuration file parameters
 Config = ConfigParser.ConfigParser()
 Config.read(os.path.expanduser('~/.treb_wordpress'))
@@ -121,8 +128,14 @@ def unlist_mls(tag):
 #         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
          if thetags.count >= 1:
              if str(thetags) in tag:
-                 post.post_status = 'unpublish'
-                 wp.call(posts.EditPost(post.id, post))
+                 filter = { 'tags' : tag }
+                 ptag = wp.call(GetPosts(filter))
+                 if len(ptag) == 0:
+                     return(False)
+                 for posttag in ptag:
+                     posttag.post_status = 'unpublish'
+                     print "post id : " + posttag.id
+                     wp.call(DeletePost(posttag.id))
                  return(True)
      return(False)
 
@@ -190,7 +203,7 @@ if tw_enabled == "true":
     tw_bitlykey = ConfigSectionMap("twitter")['bitly_key']
 
 # Get blog URL
-wp_site = Client(wp_url, wp_username, wp_password)
+wp_site = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
 siteurl = wp_site.call(options.GetOptions(['home_url']))[0].value
 
 
@@ -325,7 +338,8 @@ if avail_opt == "avail":
 			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMESSAGE%':phonemsg}
 
 			# Prepare the post
-			wp = Client(wp_url, wp_username, wp_password)
+			#wp = Client(wp_url, wp_username, wp_password)
+			wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
 			post = WordPressPost()
 			post.title = address
 			post.content = replace_words(template_text, reps)
@@ -409,16 +423,17 @@ elif avail_opt == "unavail" :
         try:
                 r = csv.reader(f) #init csv reader
                 r.next()
+                wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
                 for row in r:
-                        mlsnumber = row[1]
-		
-		# Prepare post title for search
-		wp = Client(wp_url, wp_username, wp_password)
-		unavail_id = unlist_mls(mlsnumber)
-		if unavail_id : 
-			print "The following post has been unpublished : " + mlsnumber 
-		else :
-			print "No matches for any posts with the MLS " + mlsnumber
+                        mlsnumber = row[0]
+		        # Prepare post title for search
+		        #wp = Client(wp_url, wp_username, wp_password)
+		        #wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
+		        unavail_id = unlist_mls(mlsnumber)
+		        if unavail_id : 
+			     print "The following post has been unpublished : " + mlsnumber 
+		        else:
+			     print "No matches for any posts with the MLS " + mlsnumber
 
 	finally:
 		f.close() #cleanup
