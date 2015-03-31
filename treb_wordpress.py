@@ -338,7 +338,6 @@ if avail_opt == "avail":
 			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMESSAGE%':phonemsg}
 
 			# Prepare the post
-			#wp = Client(wp_url, wp_username, wp_password)
 			wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
 			post = WordPressPost()
 			post.title = address
@@ -427,8 +426,6 @@ elif avail_opt == "unavail" :
                 for row in r:
                         mlsnumber = row[0]
 		        # Prepare post title for search
-		        #wp = Client(wp_url, wp_username, wp_password)
-		        #wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
 		        unavail_id = unlist_mls(mlsnumber)
 		        if unavail_id : 
 			     print "The following post has been unpublished : " + mlsnumber 
