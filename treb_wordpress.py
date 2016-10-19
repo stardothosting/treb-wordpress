@@ -82,7 +82,7 @@ def ftpget( hostname, localpath, remotepath, filename ) :
         os.chdir(localpath)
 
         # FTP Details
-        ftp = FTP(hostname)
+        ftp = FTP(hostname, timeout=240)
         ftp.login(user + "@photos", password)
 
         ftp.cwd(remotepath)
@@ -124,12 +124,14 @@ def unlist_mls(tag):
      p = wp.call(taxonomies.GetTerms('post_tag'))
      if len(p) == 0:
           return(False)
+     print "searching tag :" + tag
      for thetags in p:
 #         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
          if thetags.count >= 1:
              if str(thetags) in tag:
                  filter = { 'tags' : tag }
                  ptag = wp.call(GetPosts(filter))
+                 print "ptag : " + ptag
                  if len(ptag) == 0:
                      return(False)
                  for posttag in ptag:
