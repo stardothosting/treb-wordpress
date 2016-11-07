@@ -76,16 +76,37 @@ def ConfigSectionMap(section):
             dict1[option] = None
     return dict1
 
-def ftpget( hostname, localpath, remotepath, filename ) :
+#def ftpget( hostname, localpath, remotepath, filename ) :
+
+        # Go to destination DIR
+#        os.chdir(localpath)
+
+        # FTP Details
+#        ftp = FTP(hostname, timeout=320)
+#	ftp.set_debuglevel(2)
+#        ftp.login(user + "@photos", password)
+
+#        ftp.cwd(remotepath)
+#        ftp.sendcmd("TYPE i")
+#        f = open(filename,"wb")
+#        try:
+#                ftp.retrbinary("RETR " + filename,f.write)
+#        except:
+#                print "File not found.. exiting .."
+#                os.remove(filename)
+#        try:
+#                ftp.close()
+#        except:
+#                print "Error closing FTP connection ..."
+
+def ftpget( localpath, remotepath, filename ) :
 
         # Go to destination DIR
         os.chdir(localpath)
-
-        # FTP Details
-        ftp = FTP(hostname, timeout=240)
-        ftp.login(user + "@photos", password)
-
-        ftp.cwd(remotepath)
+	try:
+	        ftp.cwd(remotepath)
+	except:
+		print "Cannot change working directory..."
         ftp.sendcmd("TYPE i")
         f = open(filename,"wb")
         try:
@@ -93,11 +114,6 @@ def ftpget( hostname, localpath, remotepath, filename ) :
         except:
                 print "File not found.. exiting .."
                 os.remove(filename)
-        try:
-                ftp.close()
-        except:
-                print "Error closing FTP connection ..."
-
 #Searches wordpress posts based on title
 #def find_id(title):
 def find_id(tag):
@@ -310,19 +326,6 @@ if avail_opt == "avail":
 				if not os.path.exists(rootdir + '/wp-content/uploads/treb/' + mlsnumber):
     					os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
 
-				# GET The image files via FTP
-				#print "Starting FTP connection to get listing photos .."
-				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
-				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
-				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
-				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
-				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
-				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
-				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
-				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
-				#ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
-				#print "FTP Download complete .."
-		
 				# Adjust permissions , change 33 to whatever GID/UID you need
 				#os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
 				#for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
@@ -365,15 +368,25 @@ if avail_opt == "avail":
 				print "No existing duplicate post found .. posting to wordpress .."
                                 # GET The image files via FTP
                                 print "Starting FTP connection to get listing photos .."
-                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/1/" + mlsimage, mlsnumber + ".jpg")
-                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
-                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
-                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
-                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
-                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
-                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
-                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
-                                ftpget( "3pv.torontomls.net", rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsmultiphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+				ftp = FTP("3pv.torontomls.net", timeout=320)
+				ftp.set_debuglevel(0)
+				try:
+					ftp.login(user + "@photos", password)
+				except:
+					print "Error, could not login.."
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/1/" + mlsimage, mlsnumber + ".jpg")
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+				try:
+					ftp.close()
+				except:
+					print "Error closing FTP connection ..."
                                 print "FTP Download complete .."
 
                                 # Adjust permissions , change 33 to whatever GID/UID you need
