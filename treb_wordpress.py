@@ -76,29 +76,6 @@ def ConfigSectionMap(section):
             dict1[option] = None
     return dict1
 
-#def ftpget( hostname, localpath, remotepath, filename ) :
-
-        # Go to destination DIR
-#        os.chdir(localpath)
-
-        # FTP Details
-#        ftp = FTP(hostname, timeout=320)
-#	ftp.set_debuglevel(2)
-#        ftp.login(user + "@photos", password)
-
-#        ftp.cwd(remotepath)
-#        ftp.sendcmd("TYPE i")
-#        f = open(filename,"wb")
-#        try:
-#                ftp.retrbinary("RETR " + filename,f.write)
-#        except:
-#                print "File not found.. exiting .."
-#                os.remove(filename)
-#        try:
-#                ftp.close()
-#        except:
-#                print "Error closing FTP connection ..."
-
 def ftpget( localpath, remotepath, filename ) :
 
         # Go to destination DIR
@@ -107,6 +84,9 @@ def ftpget( localpath, remotepath, filename ) :
 	        ftp.cwd(remotepath)
 	except:
 		print "Cannot change working directory..."
+	#print "Local path : " + localpath
+	#print "Getting remote path : " + remotepath + " and filename : " + filename
+	#ftp.set_debuglevel(2)
         ftp.sendcmd("TYPE i")
         f = open(filename,"wb")
         try:
@@ -114,25 +94,15 @@ def ftpget( localpath, remotepath, filename ) :
         except:
                 print "File not found.. exiting .."
                 os.remove(filename)
-#Searches wordpress posts based on title
-#def find_id(title):
+
 def find_id(tag):
-     #   offset = 0
-     #   increment = 20
-     #   while True:
-     #           filter = { 'offset' : offset }
-                #p = wp.call(GetPosts(filter))
      p = wp.call(taxonomies.GetTerms('post_tag'))
      if len(p) == 0:
           return(False)
-     #    break # no more posts returned
      for thetags in p:
-#         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
-         #print 'tag count : ' , thetags.count
          if thetags.count >= 1:
              if str(thetags) in tag:
                 return(True)
-     #           offset = offset + increment
      return(False)
 
 #Searches wordpress post content for MLS number (or anything else)
@@ -142,7 +112,6 @@ def unlist_mls(tag):
           return(False)
      print "searching tag :" + tag
      for thetags in p:
-#         print 'looking for tag : ' , tag , ' in thetags : ' , str(thetags)
          if thetags.count >= 1:
              if str(thetags) in tag:
                  filter = { 'tags' : tag }
@@ -374,15 +343,15 @@ if avail_opt == "avail":
 					ftp.login(user + "@photos", password)
 				except:
 					print "Error, could not login.."
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/1/" + mlsimage, mlsnumber + ".jpg")
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/2/" + mlsimage, mlsnumber + "_2.jpg")
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/3/" + mlsimage, mlsnumber + "_3.jpg")
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/4/" + mlsimage, mlsnumber + "_4.jpg")
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/5/" + mlsimage, mlsnumber + "_5.jpg")
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/6/" + mlsimage, mlsnumber + "_6.jpg")
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/7/" + mlsimage, mlsnumber + "_7.jpg")
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/8/" + mlsimage, mlsnumber + "_8.jpg")
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "mlsphotos/9/" + mlsimage, mlsnumber + "_9.jpg")
+                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/1/" + mlsimage + '/', mlsnumber + ".jpg")
+                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_2.jpg")
+                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/3/" + mlsimage + '/', mlsnumber + "_3.jpg")
+                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/4/" + mlsimage + '/', mlsnumber + "_4.jpg")
+                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/5/" + mlsimage + '/', mlsnumber + "_5.jpg")
+                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/6/" + mlsimage + '/', mlsnumber + "_6.jpg")
+                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/7/" + mlsimage + '/', mlsnumber + "_7.jpg")
+                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/8/" + mlsimage + '/', mlsnumber + "_8.jpg")
+                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/9/" + mlsimage + '/', mlsnumber + "_9.jpg")
 				try:
 					ftp.close()
 				except:
