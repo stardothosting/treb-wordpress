@@ -25,6 +25,7 @@ import math
 from datetime import date, timedelta
 from ftplib import FTP
 from pygeocoder import Geocoder
+from pygeolib import GeocoderError
 from tempfile import mkstemp
 from shutil import move
 from wordpress_xmlrpc import Client, WordPressPost
@@ -49,7 +50,7 @@ class SpecialTransport(Transport):
 
 # Read configuration file parameters
 Config = ConfigParser.ConfigParser()
-Config.read(os.path.expanduser('~/.treb_wordpress'))
+Config.read('/root/treb-wordpress.config')
 
 # Check command arguments
 if len(sys.argv) <= 1 :
@@ -116,7 +117,7 @@ def unlist_mls(tag):
              if str(thetags) in tag:
                  filter = { 'tags' : tag }
                  ptag = wp.call(GetPosts(filter))
-                 print "ptag : " + ptag
+                 #print "ptag : " + ptag
                  if len(ptag) == 0:
                      return(False)
                  for posttag in ptag:
@@ -275,10 +276,16 @@ if avail_opt == "avail":
 						listingcategory = "OtherListings"
 
  	       		# Get the latitude + longitude variables
-			results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
-			lat, lng = results[0].coordinates	
-			lat = str(lat)
-			lng = str(lng)
+			print "Address for geocoder : " + address
+			try:
+				results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
+				lat, lng = results[0].coordinates
+				lat = str(lat)
+				lng = str(lng)
+			except GeocoderError:
+				print 'Error getting address, skipping'
+				(lat,lng) = (0.0,0.0)
+				continue
 
         		# Set variable for virtual tour
 			if virtualtour == "":
