@@ -1,7 +1,9 @@
 [vc_row full_width="stretch_row_content_no_spaces"][vc_column][vc_empty_space height="100px"][/vc_column][/vc_row]
+[vc_row full_width="stretch_row_content_no_spaces" content_placement="middle" bg_type="bg_color" el_class="rl-padding rr-padding tpt-listing-container" bg_color_value="#0477a6"]
+[vc_column][vc_column_text]<span class="tpt-listing-contact">%PHONEMSG%[/vc_column_text][/vc_column][/vc_row]
 [vc_row full_width="stretch_row_content_no_spaces" el_class="rl-padding rr-padding"]
 [vc_column width="2/3"]
-[vc_single_image source="external_link" external_img_size="full" custom_src="%WPBLOG%/wp-content/uploads/treb/%MLSNUMBER%/%MLSNUMBER%_2.jpg""][/vc_column]
+[vc_single_image source="external_link" external_img_size="full" custom_src="%WPBLOG%/wp-content/uploads/treb/%MLSNUMBER%/%MLSNUMBER%_2.jpg"][/vc_column]
 [vc_column width="1/3"][vc_column_text]
 <h3><span style="color: #0076a9;"> %STREETNUMBER% %STREETNAME%</span></h3>
 <strong>Price:</strong> %LISTPRICE% 
@@ -12,10 +14,24 @@
 %VIRTUALTOUR%[/vc_column_text]
 [vc_column_text]%DESCRIPTION%[/vc_column_text][/vc_column]
 [/vc_row]
-[vc_row full_width="stretch_row_content_no_spaces"][vc_column][vc_empty_space][/vc_column][/vc_row]
 [vc_row full_width="stretch_row_content_no_spaces"][vc_column][vc_empty_space][/vc_column][/vc_row][vc_row full_width="stretch_row_content_no_spaces" el_class="rr-padding rl-padding"][vc_column]
 [vc_gallery type="image_grid" source="external_link" external_img_size="150x150" custom_srcs="#E-8_%BASE64IMAGES%"]
 [/vc_column][/vc_row]
-
-
-<img src="%WPBLOG%/wp-content/uploads/treb/%MLSNUMBER%/%MLSNUMBER%_2.jpg" width="50%"><br />[lg_folder folder="%MLSNUMBER%/" caption="%STREETNUMBER% %STREETNAME%"][box style="comment"]%PHONEMESSAGE%[/box]<table border="0" width="80%"><tr><td width="30%">Street Address :</td><td width="70%">%STREETNUMBER% %STREETNAME%</td></tr><tr><td width="30%">Price :</td><td width="70%">%LISTPRICE%</td></tr><tr><td width="30%">MLS #</td><td width="70%">%MLSNUMBER%</td></tr><tr><td width="30%">Bathrooms :</td><td width="70%">%BATHROOMS%</td></tr><tr><td width="30%">Bedrooms :</td><td width="70%">%BEDROOMS%</td></tr><tr><td width="30%">Square Footage :</td><td width="70%">%SQFOOTAGE%</td></tr><tr><td width="30%">Virtual Tour :</td><td width="70%">%VIRTUALTOUR%</td></tr></table>[box style="grey"]%DESCRIPTION%[/box]<br /><br />[google-map-v3 width="100%" height="250" zoom="15" maptype="roadmap" mapalign="center" directionhint="false" language="default" poweredby="false" maptypecontrol="true" pancontrol="true" zoomcontrol="true" scalecontrol="true" streetviewcontrol="true" scrollwheelcontrol="false" draggable="true" tiltfourtyfive="false" addmarkermashupbubble="false" addmarkermashupbubble="false" addmarkerlist="%STREETNUMBER% %STREETNAME%, toronto ontario %POSTALCODE%" bubbleautopan="true" showbike="false" showtraffic="false" showpanoramio="false"]
+[vc_row full_width="stretch_row_content_no_spaces" el_class="rl-padding rr-padding"][vc_column]
+[vc_empty_space height="25px"]
+<div class="tpt-googlemap" id="map"></div>[/vc_column][/vc_row]
+<script language="javascript" type="text/javascript">
+function initMap() {
+	var theLatLng = {lat: %MAPLAT%, lng: %MAPLNG%};
+	var map = new google.maps.Map(document.getElementById('map'), {
+	center: theLatLng,
+	zoom: 15
+	});
+	var marker = new google.maps.Marker({
+          position: theLatLng,
+          map: map,
+          title: '%STREETNUMBER% %STREETNAME%'
+        });
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=%GOOGLEMAPAPI%&callback=initMap" async defer></script>

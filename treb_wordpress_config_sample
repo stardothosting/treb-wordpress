@@ -24,3 +24,6 @@ access_token_secret:
 hashtags: 
 bitly_user:
 bitly_key:
+
+[googlemap]
+google_map_api_key: EXAMPLEKEY

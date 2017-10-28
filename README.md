@@ -18,6 +18,16 @@ Integrating and installation instructions for this python code can be found here
 
 http://www.shift8web.ca/blog/treb-idx-wordpress-integration/
 
+Listing Template
+================
+
+The listing_template.txt has been updated to utilize shortcode for WP Bakery's Visual Composer
+
+Google Map
+==========
+
+You should set up a google map api key and define it in your treb config file now. The code is dynamically generated
+
 
 TO-DO Items
 ===========

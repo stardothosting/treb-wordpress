@@ -181,6 +181,7 @@ exclude_agent = ConfigSectionMap("treb")['agent_exclude']
 outfile = ConfigSectionMap("treb")['output_file']
 cur_path = os.getcwd()
 phonemsg = ConfigSectionMap("treb")['phone_msg']
+google_map_api_key = ConfigSectionMap("googlemap")['google_map_api_key']
 tw_enabled = ConfigSectionMap("twitter")['enabled']
 if tw_enabled == "true":
     tw_consumer = ConfigSectionMap("twitter")['consumer']
@@ -317,29 +318,41 @@ if avail_opt == "avail":
 			template_read.close()
 
 			# Prepare Base64 encoded string for gallery 
-			listing_gallery = siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/1/" + mlsimage + '/', mlsnumber + ".jpg\n" \
-					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_2.jpg\n" \  
-					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_3.jpg\n" \  
-					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_4.jpg\n" \  
-					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_5.jpg\n" \  
-					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_6.jpg\n" \  
-					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_7.jpg\n" \  
-					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_8.jpg\n" \  
-					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_9.jpg" 
-			listing_gallery_base64 = base64.b64encode(bytes(listing_gallery, 'utf-8'))
+			listing_gallery_1 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s.jpg" % (siteurl, mlsnumber, mlsnumber))
+			listing_gallery_2 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_2.jpg" % (siteurl, mlsnumber, mlsnumber))
+			listing_gallery_3 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_3.jpg" % (siteurl, mlsnumber, mlsnumber))
+			listing_gallery_4 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_4.jpg" % (siteurl, mlsnumber, mlsnumber))
+			listing_gallery_5 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_5.jpg" % (siteurl, mlsnumber, mlsnumber))
+			listing_gallery_6 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_6.jpg" % (siteurl, mlsnumber, mlsnumber))
+			listing_gallery_7 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_7.jpg" % (siteurl, mlsnumber, mlsnumber))
+			listing_gallery_8 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_8.jpg" % (siteurl, mlsnumber, mlsnumber))
+			listing_gallery_9 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_9.jpg"% (siteurl, mlsnumber, mlsnumber))
+
+			listing_gallery = listing_gallery_1 + "%2C" + listing_gallery_2 + "%2C" + listing_gallery_3 + "%2C" + listing_gallery_4 + "%2C" + listing_gallery_5 + "%2C" + listing_gallery_6 + "%2C" + listing_gallery_7 + "%2C" + listing_gallery_8 + "%2C" + listing_gallery_9
+
+			listing_gallery_base64 = base64.b64encode(listing_gallery)
+			#print listing_gallery
+			#print listing_gallery_base64
+			#input("wait . .")
+
 			#Replacements from the template
-			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMESSAGE%':phonemsg}
+			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMSG%':phonemsg, '%MAPLAT%':lat, '%MAPLNG%':lng, '%BASE64IMAGES%':listing_gallery_base64, '%GOOGLEMAPAPI%':google_map_api_key }
+			post_excerpt = """
+<span class="tpt-ex-address">%s %s</span>
+<span class="tpt-ex-price">%s</span>
+<span class="tpt-ex-mls">MLS : %s</span>""" % (streetnumber, streetname, listpricefix, mlsnumber)
 
 			# Prepare the post
 			wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
 			post = WordPressPost()
 			post.title = address
 			post.content = replace_words(template_text, reps)
+			post.excerpt = post_excerpt
 			post.terms_names = {
         		'post_tag': [mlsnumber],
         		'category': [listingcategory],
 			}
-	
+
 			# Check if post exists already
 			print "Post title : " + post.title
 			print "Checking if post exists .."
@@ -362,15 +375,15 @@ if avail_opt == "avail":
 					ftp.login(user + "@photos", password)
 				except:
 					print "Error, could not login.."
-                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/1/" + mlsimage + '/', mlsnumber + ".jpg")
-                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_2.jpg")
-                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/3/" + mlsimage + '/', mlsnumber + "_3.jpg")
-                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/4/" + mlsimage + '/', mlsnumber + "_4.jpg")
-                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/5/" + mlsimage + '/', mlsnumber + "_5.jpg")
-                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/6/" + mlsimage + '/', mlsnumber + "_6.jpg")
-                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/7/" + mlsimage + '/', mlsnumber + "_7.jpg")
-                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/8/" + mlsimage + '/', mlsnumber + "_8.jpg")
-                                ftpget( rootdir + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/9/" + mlsimage + '/', mlsnumber + "_9.jpg")
+                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/1/" + mlsimage + '/', mlsnumber + ".jpg")
+                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_2.jpg")
+                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/3/" + mlsimage + '/', mlsnumber + "_3.jpg")
+                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/4/" + mlsimage + '/', mlsnumber + "_4.jpg")
+                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/5/" + mlsimage + '/', mlsnumber + "_5.jpg")
+                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/6/" + mlsimage + '/', mlsnumber + "_6.jpg")
+                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/7/" + mlsimage + '/', mlsnumber + "_7.jpg")
+                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/8/" + mlsimage + '/', mlsnumber + "_8.jpg")
+                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/9/" + mlsimage + '/', mlsnumber + "_9.jpg")
 				try:
 					ftp.close()
 				except:
@@ -387,6 +400,20 @@ if avail_opt == "avail":
 				template_out.write(post.content)
 				template_out.close()
 				post.id = wp.call(NewPost(post))
+
+				# Set featured image
+	                        featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + "_2.jpg"
+	                        featured_data = {
+	                        'name': mlsnumber + "_2.jpg",
+	                        'type': 'image/jpeg',
+	                        }
+	                        with open(featured_filename, 'rb') as img:
+	                                featured_data['bits'] = xmlrpc_client.Binary(img.read())
+	                        response = wp.call(media.UploadFile(featured_data))
+	                        attachment_id = response['id']
+				if attachment_id:
+	                                post.thumbnail = attachment_id
+
 				post.post_status = 'publish'
 				wp.call(posts.EditPost(post.id, post))
                                 post_link = wp.call(posts.GetPost(post.id))
