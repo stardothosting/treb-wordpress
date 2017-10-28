@@ -22,6 +22,7 @@
 import csv, sys, urllib, urlparse, string, time, locale, os, os.path, socket, re, requests, xmlrpclib,errno
 import ConfigParser
 import math
+import base64
 from datetime import date, timedelta
 from ftplib import FTP
 from pygeocoder import Geocoder
@@ -291,7 +292,7 @@ if avail_opt == "avail":
 			if virtualtour == "":
 				virtualtour = "N/A"
 			else:
-				virtualtour = "<a href=\"" + virtualtour + "\" target=\"_new\"><b>Click here for virtual tour</b></a>"
+				virtualtour = "<strong>Virtual Tour:</strong> <a href=\"" + virtualtour + "\" target=\"_new\"><b>Click here for virtual tour</b></a>"
 
 			# Start prepping the uploads folder for the MLS listing images
 			if pictures == "Y":
@@ -315,6 +316,17 @@ if avail_opt == "avail":
 			template_text = template_read.read()
 			template_read.close()
 
+			# Prepare Base64 encoded string for gallery 
+			listing_gallery = siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/1/" + mlsimage + '/', mlsnumber + ".jpg\n" \
+					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_2.jpg\n" \  
+					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_3.jpg\n" \  
+					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_4.jpg\n" \  
+					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_5.jpg\n" \  
+					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_6.jpg\n" \  
+					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_7.jpg\n" \  
+					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_8.jpg\n" \  
+					  siteurl + "wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_9.jpg" 
+			listing_gallery_base64 = base64.b64encode(bytes(listing_gallery, 'utf-8'))
 			#Replacements from the template
 			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMESSAGE%':phonemsg}
 
