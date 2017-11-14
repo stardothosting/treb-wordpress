@@ -191,6 +191,10 @@ if tw_enabled == "true":
     tw_hashtags = ConfigSectionMap("twitter")['hashtags']
     tw_bitlyuser = ConfigSectionMap("twitter")['bitly_user']
     tw_bitlykey = ConfigSectionMap("twitter")['bitly_key']
+walkscore_enabled = ConfigSectionMap("walkscore")['enabled']
+if walkscore_enabled == "true":
+    walkscore_api_key = ConfigSectionMap("walkscore")['walkscore_api_key']
+    walkscore_id = ConfigSectionMap("walkscore")['walkscore_id']
 
 # Get blog URL
 wp_site = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
@@ -251,6 +255,10 @@ if avail_opt == "avail":
         		lastupdate = row[123]
         		solddate = row[24]
         		agentid = row[333]
+			municipality = row[450]
+			province = row[49]
+			country = row[48]
+			
 
 			#Sanitize Variables
 			listpricefix = locale.currency(int(listprice), grouping=True )
@@ -334,9 +342,21 @@ if avail_opt == "avail":
 			#print listing_gallery
 			#print listing_gallery_base64
 			#input("wait . .")
+			if walkscore_enabled == 'true':
+				walkscore_code = """
+<script type='text/javascript'>
+var ws_wsid = '%s';
+var ws_address = '%s %s %s, %s, %s, %s'
+var ws_format = 'square';
+var ws_width = '300';
+var ws_height = '300';
+</script><style type='text/css'>#ws-walkscore-tile{position:relative;text-align:left}#ws-walkscore-tile *{float:none;}</style><div id='ws-walkscore-tile'></div><script type='text/javascript' src='http://www.walkscore.com/tile/show-walkscore-tile.php'></script>
+""" % (walkscore_id, streetnumber, streetname, streetsuffix, municipality, province, country)
+			else:
+				walkscore_code = " "
 
 			#Replacements from the template
-			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMSG%':phonemsg, '%MAPLAT%':lat, '%MAPLNG%':lng, '%BASE64IMAGES%':listing_gallery_base64, '%GOOGLEMAPAPI%':google_map_api_key }
+			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMSG%':phonemsg, '%MAPLAT%':lat, '%MAPLNG%':lng, '%BASE64IMAGES%':listing_gallery_base64, '%GOOGLEMAPAPI%':google_map_api_key,  '%WALKSCORECODE%':walkscore_code }
 			post_excerpt = """
 <span class="tpt-ex-address">%s %s</span>
 <span class="tpt-ex-price">%s</span>

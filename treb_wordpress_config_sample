@@ -27,3 +27,8 @@ bitly_key:
 
 [googlemap]
 google_map_api_key: EXAMPLEKEY
+
+[walkscore]
+enabled: false
+walkscore_api_key: 
+walkscore_id: 
