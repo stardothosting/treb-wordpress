@@ -358,7 +358,7 @@ var ws_height = '300';
 
 			# Populate APT Number
 			if apt_num:
-				apt_num = '#' + apt_num
+				apt_num = '(apt #' + apt_num + ')
 				
 
 			#Replacements from the template

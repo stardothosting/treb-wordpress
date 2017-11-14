@@ -5,7 +5,7 @@
 [vc_column width="2/3"]
 [vc_single_image source="external_link" external_img_size="full" alignment="center" custom_src="%WPBLOG%/wp-content/uploads/treb/%MLSNUMBER%/%MLSNUMBER%_2.jpg"][/vc_column]
 [vc_column width="1/3" el_class="tpt-listing-street"][vc_column_text]
-<h3><span style="color: #0076a9;"> %STREETNUMBER% %STREETNAME%</span></h3>
+<h3><span style="color: #0076a9;"> %STREETNUMBER% %STREETNAME% %APT_NUM%</span></h3>
 <strong>Price:</strong> %LISTPRICE% 
 <strong>MLS#</strong> %MLSNUMBER%
 <strong>Bathrooms:</strong> %BATHROOMS%
