@@ -239,6 +239,7 @@ if avail_opt == "avail":
         		streetnumber = row[275]
 			streetsuffix = row[276]
 			address = row[3]
+			apt_num = row[7]
         		postalcode = row[330]
         		bathrooms = row[10]
         		bedrooms = row[15]
@@ -355,8 +356,13 @@ var ws_height = '300';
 			else:
 				walkscore_code = " "
 
+			# Populate APT Number
+			if apt_num:
+				apt_num = '#' + apt_num
+				
+
 			#Replacements from the template
-			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMSG%':phonemsg, '%MAPLAT%':lat, '%MAPLNG%':lng, '%BASE64IMAGES%':listing_gallery_base64, '%GOOGLEMAPAPI%':google_map_api_key,  '%WALKSCORECODE%':walkscore_code }
+			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%APT_NUM%':apt_num, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMSG%':phonemsg, '%MAPLAT%':lat, '%MAPLNG%':lng, '%BASE64IMAGES%':listing_gallery_base64, '%GOOGLEMAPAPI%':google_map_api_key,  '%WALKSCORECODE%':walkscore_code }
 			post_excerpt = """
 <span class="tpt-ex-address">%s %s</span>
 <span class="tpt-ex-price">%s</span>
