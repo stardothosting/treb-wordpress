@@ -263,6 +263,7 @@ if avail_opt == "avail":
 
 			#Sanitize Variables
 			listpricefix = locale.currency(int(listprice), grouping=True )
+			addressfix = address + ', ' + municipality + ', ' + province + ', ' + country
 			#description = description.replace(":", "\:").replace("/", "\/").replace("&", "\&")
 			#virtualtour = virtualtour.replace(":", "\:").replace("/", "\/").replace("&", "\&")
 
@@ -287,9 +288,9 @@ if avail_opt == "avail":
 						listingcategory = "OtherListings"
 
  	       		# Get the latitude + longitude variables
-			print "Address for geocoder : " + address
+			print "Address for geocoder : " + addressfix
 			try:
-				results = Geocoder.geocode(address + " Toronto, Ontario, Canada")
+				results = Geocoder.geocode(addressfix)
 				lat, lng = results[0].coordinates
 				lat = str(lat)
 				lng = str(lng)
@@ -358,7 +359,7 @@ var ws_height = '300';
 
 			# Populate APT Number
 			if apt_num:
-				apt_num = '(apt #' + apt_num + ')
+				apt_num = '(apt #' + apt_num + ')'
 				
 
 			#Replacements from the template
@@ -371,7 +372,7 @@ var ws_height = '300';
 			# Prepare the post
 			wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
 			post = WordPressPost()
-			post.title = address
+			post.title = addressfix
 			post.content = replace_words(template_text, reps)
 			post.excerpt = post_excerpt
 			post.terms_names = {
@@ -449,7 +450,7 @@ var ws_height = '300';
                                     auth.set_access_token(tw_token, tw_token_secret)
                                     api = tweepy.API(auth)
                                     b = bitlyapi.BitLy(tw_bitlyuser, tw_bitlykey)
-                                    tweet = 'New Listing : ' , address , ' , ' , listpricefix , ' , ' , bedrooms , ' beds ' , bathrooms , ' baths '
+                                    tweet = 'New Listing : ' , addressfix , ' , ' , listpricefix , ' , ' , bedrooms , ' beds ' , bathrooms , ' baths '
                                     hashtag_list = tw_hashtags.split(',')
                                     for hash in hashtag_list:
                                         tweet += '#', hash , ' '
