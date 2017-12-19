@@ -257,13 +257,13 @@ if avail_opt == "avail":
         		solddate = row[24]
         		agentid = row[333]
 			municipality = row[450]
-			province = row[49]
-			country = row[48]
+			province = row[48]
+			country = 'Canada'
 			
 
 			#Sanitize Variables
 			listpricefix = locale.currency(int(listprice), grouping=True )
-			addressfix = address + ', ' + municipality + ', ' + province + ', ' + country
+			addressfix = address + ', ' + municipality + ', ' + province
 			#description = description.replace(":", "\:").replace("/", "\/").replace("&", "\&")
 			#virtualtour = virtualtour.replace(":", "\:").replace("/", "\/").replace("&", "\&")
 
