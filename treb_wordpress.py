@@ -224,7 +224,6 @@ url = "http://3pv.torontomls.net/data3pv/DownLoad3PVAction.asp?user_code=" + use
 silentremove(outfile)
 urllib.urlretrieve(url,outfile)
 
-
 # Available or Unavailable Listing Logic
 if avail_opt == "avail":
 
@@ -260,12 +259,12 @@ if avail_opt == "avail":
 			province = row[48]
 			country = 'Canada'
 			
-
 			#Sanitize Variables
 			listpricefix = locale.currency(int(listprice), grouping=True )
 			addressfix = address + ', ' + municipality + ', ' + province
 			#description = description.replace(":", "\:").replace("/", "\/").replace("&", "\&")
 			#virtualtour = virtualtour.replace(":", "\:").replace("/", "\/").replace("&", "\&")
+			print "MLS NUMBER : " + mlsnumber
 
 
 		# Set category and verify if other agent listing is over minimum_listing in config file
@@ -290,11 +289,14 @@ if avail_opt == "avail":
  	       		# Get the latitude + longitude variables
 			print "Address for geocoder : " + addressfix
 			try:
-				results = Geocoder.geocode(addressfix)
+				treb_geocoder = Geocoder(api_key=google_map_api_key)
+				results = treb_geocoder.geocode(addressfix)
 				lat, lng = results[0].coordinates
 				lat = str(lat)
 				lng = str(lng)
-			except GeocoderError:
+			except GeocoderError as e:
+				print('*** Caught exception: %s: %s' % (e.__class__, e))
+				traceback.print_exc()
 				print 'Error getting address, skipping'
 				(lat,lng) = (0.0,0.0)
 				continue
@@ -428,45 +430,48 @@ var ws_height = '300';
 				template_out.close()
 				post.id = wp.call(NewPost(post))
 
-				# Set featured image
-	                        featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + "_2.jpg"
-	                        featured_data = {
-	                        'name': mlsnumber + "_2.jpg",
-	                        'type': 'image/jpeg',
-	                        }
-	                        with open(featured_filename, 'rb') as img:
-	                                featured_data['bits'] = xmlrpc_client.Binary(img.read())
-	                        response = wp.call(media.UploadFile(featured_data))
-	                        attachment_id = response['id']
-				if attachment_id:
-	                                post.thumbnail = attachment_id
+                # Set featured image
+                featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + "_2.jpg"
+                featured_data = {
+                'name': mlsnumber + "_2.jpg",
+                'type': 'image/jpeg',
+                }
+                try:
+                    with open(featured_filename, 'rb') as img:
+                        featured_data['bits'] = xmlrpc_client.Binary(img.read())
+                        response = wp.call(media.UploadFile(featured_data))
+                        attachment_id = response['id']
+                except Exception as e:
+                    print('*** Caught exception: %s: %s' % (e.__class__, e))
+                    traceback.print_exc()
+    
+                if attachment_id:
+                    post.thumbnail = attachment_id
 
-				post.post_status = 'publish'
-				wp.call(posts.EditPost(post.id, post))
-                                post_link = wp.call(posts.GetPost(post.id))
-                                if tw_enabled == "true":
-                                    print "Posting to twitter .."
-                                    auth = tweepy.OAuthHandler(tw_consumer, tw_secret)
-                                    auth.set_access_token(tw_token, tw_token_secret)
-                                    api = tweepy.API(auth)
-                                    b = bitlyapi.BitLy(tw_bitlyuser, tw_bitlykey)
-                                    tweet = 'New Listing : ' , addressfix , ' , ' , listpricefix , ' , ' , bedrooms , ' beds ' , bathrooms , ' baths '
-                                    hashtag_list = tw_hashtags.split(',')
-                                    for hash in hashtag_list:
-                                        tweet += '#', hash , ' '
-                                    tweet_fixed = ''.join(str(e) for e in tweet)
-                                    try:
-                                        bitly_url = b.shorten(longUrl=post_link.link)
-                                    except Exception, e:
-                                        print 'Bitly error : ' + str(e)
-                                        bitly_url = '' 
-                                    tweet_fixed += ' ' + str(bitly_url['url'])
-                                    #pprint.pprint(bitly_url['url'])
-                                    try: 
-                                        api.update_status(tweet_fixed[:140])
-                                #        pprint.pprint(tweet_fixed[:140])
-                                    except Exception, e:
-                                        print 'Twitter error : ' + str(e)
+                post.post_status = 'publish'
+                wp.call(posts.EditPost(post.id, post))
+                post_link = wp.call(posts.GetPost(post.id))
+                if tw_enabled == "true":
+                    print "Posting to twitter .."
+                    auth = tweepy.OAuthHandler(tw_consumer, tw_secret)
+                    auth.set_access_token(tw_token, tw_token_secret)
+                    api = tweepy.API(auth)
+                    b = bitlyapi.BitLy(tw_bitlyuser, tw_bitlykey)
+                    tweet = 'New Listing : ' , addressfix , ' , ' , listpricefix , ' , ' , bedrooms , ' beds ' , bathrooms , ' baths '
+                    hashtag_list = tw_hashtags.split(',')
+                    for hash in hashtag_list:
+                        tweet += '#', hash , ' '
+                        tweet_fixed = ''.join(str(e) for e in tweet)
+                        try:
+                            bitly_url = b.shorten(longUrl=post_link.link)
+                        except Exception, e:
+                            print 'Bitly error : ' + str(e)
+                            bitly_url = '' 
+                            tweet_fixed += ' ' + str(bitly_url['url'])
+                            try: 
+                                api.update_status(tweet_fixed[:140])
+                            except Exception, e:
+                                print 'Twitter error : ' + str(e)
 	finally:
 		f.close() #cleanup
 		silentremove(outfile)
