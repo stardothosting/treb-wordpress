@@ -79,23 +79,22 @@ def ConfigSectionMap(section):
     return dict1
 
 def ftpget( localpath, remotepath, filename ) :
-
-        # Go to destination DIR
-        os.chdir(localpath)
-	try:
-	        ftp.cwd(remotepath)
-	except:
-		print "Cannot change working directory..."
-	#print "Local path : " + localpath
-	#print "Getting remote path : " + remotepath + " and filename : " + filename
-	#ftp.set_debuglevel(2)
-        ftp.sendcmd("TYPE i")
-        f = open(filename,"wb")
-        try:
-                ftp.retrbinary("RETR " + filename,f.write)
-        except:
-                print "File not found.. exiting .."
-                os.remove(filename)
+    # Go to destination DIR
+    os.chdir(localpath)
+    try:
+        ftp.cwd(remotepath)
+    except:
+        print "Cannot change working directory..."
+    #print "Local path : " + localpath
+    #print "Getting remote path : " + remotepath + " and filename : " + filename
+    #ftp.set_debuglevel(2)
+    ftp.sendcmd("TYPE i")
+    f = open(filename,"wb")
+    try:
+        ftp.retrbinary("RETR " + filename,f.write)
+    except:
+        print "File not found.. exiting .."
+        os.remove(filename)
 
 def find_id(tag):
      p = wp.call(taxonomies.GetTerms('post_tag'))
@@ -130,10 +129,10 @@ def unlist_mls(tag):
 
 #Take text and replace words that match an array
 def replace_words(text, word_dic):
-	rc = re.compile('|'.join(map(re.escape, word_dic)))
-	def translate(match):
-		return word_dic[match.group(0)]
-	return rc.sub(translate, text)
+    rc = re.compile('|'.join(map(re.escape, word_dic)))
+    def translate(match):
+        return word_dic[match.group(0)]
+    return rc.sub(translate, text)
 
 #Silent way of removing a file if it already exists
 def silentremove(file_name):
@@ -207,12 +206,12 @@ the_day = past_date.strftime('%d')
 the_mon = past_date.strftime('%m')
 the_yr = past_date.strftime('%-Y')
 locale.setlocale(locale.LC_ALL, 'en_US.UTF8')
-	
+    
 # check if slash was added to rootdir
 if rootdir.endswith('/'):
-	print "Slash detected in rootdir .."
+    print "Slash detected in rootdir .."
 else:
-	rootdir = rootdir + "/"
+    rootdir = rootdir + "/"
 
 # build the url query string
 url = "http://3pv.torontomls.net/data3pv/DownLoad3PVAction.asp?user_code=" + user + "&password=" + password + "&sel_fields=*&dlDay=" + the_day + "&dlMonth=" + the_mon + "&dlYear=" + the_yr + "&order_by=&au_both=" + avail_opt + "&dl_type=file&incl_names=yes&use_table=MLS&send_done=no&submit1=Submit&query_str=lud%3E%3D%27" + the_yr + the_mon + the_day + "%27"
@@ -227,127 +226,118 @@ urllib.urlretrieve(url,outfile)
 # Available or Unavailable Listing Logic
 if avail_opt == "avail":
 
-	# read the csv file
-	f = open(outfile, 'r') #open file
-	try:
-    		r = csv.reader(f) #init csv reader
-    		r.next()
-    		for row in r:
-        		description = row[2]
-        		streetname = row[273]
-        		streetnumber = row[275]
-			streetsuffix = row[276]
-			address = row[3]
-			apt_num = row[7]
-        		postalcode = row[330]
-        		bathrooms = row[10]
-        		bedrooms = row[15]
-        		bedplus = row[16]
-        		houseclass = row[29]
-        		extras = row[69]
-        		listagent = row[111]
-        		listprice = row[120]
-        		mlsnumber = row[130]
-        		squarefoot = row[269]
-        		virtualtour = row[292]
-        		pictures = row[174]
-        		inputdate = row[174]
-        		lastupdate = row[123]
-        		solddate = row[24]
-        		agentid = row[333]
-			municipality = row[450]
-			province = row[48]
-			country = 'Canada'
-			
-			#Sanitize Variables
-			listpricefix = locale.currency(int(listprice), grouping=True )
-			addressfix = address + ', ' + municipality + ', ' + province
-			#description = description.replace(":", "\:").replace("/", "\/").replace("&", "\&")
-			#virtualtour = virtualtour.replace(":", "\:").replace("/", "\/").replace("&", "\&")
-			print "MLS NUMBER : " + mlsnumber
+    # read the csv file
+    f = open(outfile, 'r') #open file
+    try:
+        r = csv.reader(f) #init csv reader
+        r.next()
+        for row in r:
+            description = row[2]
+            streetname = row[273]
+            streetnumber = row[275]
+            streetsuffix = row[276]
+            address = row[3]
+            apt_num = row[7]
+            postalcode = row[330]
+            bathrooms = row[10]
+            bedrooms = row[15]
+            bedplus = row[16]
+            houseclass = row[29]
+            extras = row[69]
+            listagent = row[111]
+            listprice = row[120]
+            mlsnumber = row[130]
+            squarefoot = row[269]
+            virtualtour = row[292]
+            pictures = row[174]
+            inputdate = row[174]
+            lastupdate = row[123]
+            solddate = row[24]
+            agentid = row[333]
+            municipality = row[450]
+            province = row[48]
+            country = 'Canada'
+            
+            #Sanitize Variables
+            listpricefix = locale.currency(int(listprice), grouping=True )
+            addressfix = address + ', ' + municipality + ', ' + province
+            #description = description.replace(":", "\:").replace("/", "\/").replace("&", "\&")
+            #virtualtour = virtualtour.replace(":", "\:").replace("/", "\/").replace("&", "\&")
+            print "MLS NUMBER : " + mlsnumber
 
 
-		# Set category and verify if other agent listing is over minimum_listing in config file
-                        include = is_agent(agentid, agent_id)
-			#if agentid == agent_id:
-                        if include: 
-                		listingcategory = "Listings"
-        		else:
-				if int(listprice) < min_listing:
-                        		print "Listing " + mlsnumber + " is below $" + str(min_listing) + " , Not adding"
-                			continue
-                		else:
-					# Check if agent is in exclude list
-					exclude = ex_agent(agentid, exclude_agent)
-					if exclude:
-						print "Agent ID " + str(exclude) + " in exclude list, skipping .. "
-						continue
-					else:
-						print "Agent ID " + str(agentid) + " not in exclude list .. "
-						listingcategory = "OtherListings"
+            # Set category and verify if other agent listing is over minimum_listing in config file
+            include = is_agent(agentid, agent_id)
+            if include: 
+                listingcategory = "Listings"
+            else:
+                if int(listprice) < min_listing:
+                    print "Listing " + mlsnumber + " is below $" + str(min_listing) + " , Not adding"
+                    continue
+                else:
+                    # Check if agent is in exclude list
+                    exclude = ex_agent(agentid, exclude_agent)
+                    if exclude:
+                        print "Agent ID " + str(exclude) + " in exclude list, skipping .. "
+                        continue
+                    else:
+                        print "Agent ID " + str(agentid) + " not in exclude list .. "
+                        listingcategory = "OtherListings"
 
- 	       		# Get the latitude + longitude variables
-			print "Address for geocoder : " + addressfix
-			try:
-				treb_geocoder = Geocoder(api_key=google_map_api_key)
-				results = treb_geocoder.geocode(addressfix)
-				lat, lng = results[0].coordinates
-				lat = str(lat)
-				lng = str(lng)
-			except GeocoderError as e:
-				print('*** Caught exception: %s: %s' % (e.__class__, e))
-				traceback.print_exc()
-				print 'Error getting address, skipping'
-				(lat,lng) = (0.0,0.0)
-				continue
+                    # Get the latitude + longitude variables
+            print "Address for geocoder : " + addressfix
+            try:
+                treb_geocoder = Geocoder(api_key=google_map_api_key)
+                results = treb_geocoder.geocode(addressfix)
+                lat, lng = results[0].coordinates
+                lat = str(lat)
+                lng = str(lng)
+            except GeocoderError as e:
+                print('*** Caught exception: %s: %s' % (e.__class__, e))
+                traceback.print_exc()
+                print 'Error getting address, skipping'
+                (lat,lng) = (0.0,0.0)
+                continue
 
-        		# Set variable for virtual tour
-			if virtualtour == "":
-				virtualtour = "N/A"
-			else:
-				virtualtour = "<strong>Virtual Tour:</strong> <a href=\"" + virtualtour + "\" target=\"_new\"><b>Click here for virtual tour</b></a>"
+                # Set variable for virtual tour
+            if virtualtour == "":
+                virtualtour = "N/A"
+            else:
+                virtualtour = "<strong>Virtual Tour:</strong> <a href=\"" + virtualtour + "\" target=\"_new\"><b>Click here for virtual tour</b></a>"
 
-			# Start prepping the uploads folder for the MLS listing images
-			if pictures == "Y":
-				mlsimage = mlsnumber[-3:]
-				print "MLS Image : " + mlsimage
+            # Start prepping the uploads folder for the MLS listing images
+            if pictures == "Y":
+                mlsimage = mlsnumber[-3:]
+                print "MLS Image : " + mlsimage
 
-				# Create upload folder if it doesnt exist
-				if not os.path.exists(rootdir + '/wp-content/uploads/treb/' + mlsnumber):
-    					os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
+                # Create upload folder if it doesnt exist
+                if not os.path.exists(rootdir + '/wp-content/uploads/treb/' + mlsnumber):
+                        os.makedirs(rootdir + '/wp-content/uploads/treb/' + mlsnumber)
 
-				# Adjust permissions , change 33 to whatever GID/UID you need
-				#os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
-				#for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
-				#	for filename in files:
-				#		os.chown(os.path.join(root, filename), userperm, groupperm)
-        		else:
-                		print "No photos ..."
+                else:
+                        print "No photos ..."
 
-        		# Generate post content from the template file
-			template_read = open(cur_path + "/listing_template.txt", "r")
-			template_text = template_read.read()
-			template_read.close()
+                # Generate post content from the template file
+            template_read = open(cur_path + "/listing_template.txt", "r")
+            template_text = template_read.read()
+            template_read.close()
 
-			# Prepare Base64 encoded string for gallery 
-			listing_gallery_1 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s.jpg" % (siteurl, mlsnumber, mlsnumber))
-			listing_gallery_2 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_2.jpg" % (siteurl, mlsnumber, mlsnumber))
-			listing_gallery_3 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_3.jpg" % (siteurl, mlsnumber, mlsnumber))
-			listing_gallery_4 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_4.jpg" % (siteurl, mlsnumber, mlsnumber))
-			listing_gallery_5 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_5.jpg" % (siteurl, mlsnumber, mlsnumber))
-			listing_gallery_6 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_6.jpg" % (siteurl, mlsnumber, mlsnumber))
-			listing_gallery_7 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_7.jpg" % (siteurl, mlsnumber, mlsnumber))
-			listing_gallery_8 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_8.jpg" % (siteurl, mlsnumber, mlsnumber))
-			listing_gallery_9 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_9.jpg"% (siteurl, mlsnumber, mlsnumber))
+            # Prepare Base64 encoded string for gallery 
+            listing_gallery_1 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s.jpg" % (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_2 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_2.jpg" % (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_3 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_3.jpg" % (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_4 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_4.jpg" % (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_5 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_5.jpg" % (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_6 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_6.jpg" % (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_7 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_7.jpg" % (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_8 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_8.jpg" % (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_9 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_9.jpg"% (siteurl, mlsnumber, mlsnumber))
 
-			listing_gallery = listing_gallery_1 + "%2C" + listing_gallery_2 + "%2C" + listing_gallery_3 + "%2C" + listing_gallery_4 + "%2C" + listing_gallery_5 + "%2C" + listing_gallery_6 + "%2C" + listing_gallery_7 + "%2C" + listing_gallery_8 + "%2C" + listing_gallery_9
+            listing_gallery = listing_gallery_1 + "%2C" + listing_gallery_2 + "%2C" + listing_gallery_3 + "%2C" + listing_gallery_4 + "%2C" + listing_gallery_5 + "%2C" + listing_gallery_6 + "%2C" + listing_gallery_7 + "%2C" + listing_gallery_8 + "%2C" + listing_gallery_9
 
-			listing_gallery_base64 = base64.b64encode(listing_gallery)
-			#print listing_gallery
-			#print listing_gallery_base64
-			#input("wait . .")
-			if walkscore_enabled == 'true':
-				walkscore_code = """
+            listing_gallery_base64 = base64.b64encode(listing_gallery)
+            if walkscore_enabled == 'true':
+                walkscore_code = """
 <script type='text/javascript'>
 var ws_wsid = '%s';
 var ws_address = '%s %s %s, %s, %s, %s'
@@ -356,79 +346,84 @@ var ws_width = '300';
 var ws_height = '300';
 </script><style type='text/css'>#ws-walkscore-tile{position:relative;text-align:left}#ws-walkscore-tile *{float:none;}</style><div id='ws-walkscore-tile'></div><script type='text/javascript' src='http://www.walkscore.com/tile/show-walkscore-tile.php'></script>
 """ % (walkscore_id, streetnumber, streetname, streetsuffix, municipality, province, country)
-			else:
-				walkscore_code = " "
+            else:
+                walkscore_code = " "
 
-			# Populate APT Number
-			if apt_num:
-				apt_num = '(apt #' + apt_num + ')'
-				
+            # Populate APT Number
+            if apt_num:
+                apt_num = '(apt #' + apt_num + ')'
+                
 
-			#Replacements from the template
-			reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%APT_NUM%':apt_num, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMSG%':phonemsg, '%MAPLAT%':lat, '%MAPLNG%':lng, '%BASE64IMAGES%':listing_gallery_base64, '%GOOGLEMAPAPI%':google_map_api_key,  '%WALKSCORECODE%':walkscore_code }
-			post_excerpt = """
+            #Replacements from the template
+            reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%APT_NUM%':apt_num, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMSG%':phonemsg, '%MAPLAT%':lat, '%MAPLNG%':lng, '%BASE64IMAGES%':listing_gallery_base64, '%GOOGLEMAPAPI%':google_map_api_key,  '%WALKSCORECODE%':walkscore_code }
+            post_excerpt = """
 <span class="tpt-ex-address">%s %s</span>
 <span class="tpt-ex-price">%s</span>
 <span class="tpt-ex-mls">MLS : %s</span>""" % (streetnumber, streetname, listpricefix, mlsnumber)
 
-			# Prepare the post
-			wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
-			post = WordPressPost()
-			post.title = addressfix
-			post.content = replace_words(template_text, reps)
-			post.excerpt = post_excerpt
-			post.terms_names = {
-        		'post_tag': [mlsnumber],
-        		'category': [listingcategory],
-			}
+            # Prepare the post
+            wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
+            post = WordPressPost()
+            post.title = addressfix
+            post.content = replace_words(template_text, reps)
+            post.excerpt = post_excerpt
+            post.terms_names = {
+                'post_tag': [mlsnumber],
+                'category': [listingcategory],
+            }
 
-			# Check if post exists already
-			print "Post title : " + post.title
-			print "Checking if post exists .."
-			#post_id = find_id(post.title)
-			post_id = find_id(mlsnumber)
-			if post_id:
-				# check if sold date variable is set and update existing post to reflect the property as sold
-				if solddate == "" :
-					print "Sorry, a post ID exists already"
-				else :
-					post.title = "[SOLD!] " + post.title
-					wp.call(posts.EditPost(post.id, post))
-			else:
-				print "No existing duplicate post found .. posting to wordpress .."
-                                # GET The image files via FTP
-                                print "Starting FTP connection to get listing photos .."
-				ftp = FTP("3pv.torontomls.net", timeout=320)
-				ftp.set_debuglevel(0)
-				try:
-					ftp.login(user + "@photos", password)
-				except:
-					print "Error, could not login.."
-                                ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/1/" + mlsimage + '/', mlsnumber + ".jpg")
-                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_2.jpg")
-                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/3/" + mlsimage + '/', mlsnumber + "_3.jpg")
-                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/4/" + mlsimage + '/', mlsnumber + "_4.jpg")
-                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/5/" + mlsimage + '/', mlsnumber + "_5.jpg")
-                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/6/" + mlsimage + '/', mlsnumber + "_6.jpg")
-                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/7/" + mlsimage + '/', mlsnumber + "_7.jpg")
-                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/8/" + mlsimage + '/', mlsnumber + "_8.jpg")
-                               	ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/9/" + mlsimage + '/', mlsnumber + "_9.jpg")
-				try:
-					ftp.close()
-				except:
-					print "Error closing FTP connection ..."
-                                print "FTP Download complete .."
+            # Check if post exists already
+            print "Post title : " + post.title
+            print "Checking if post exists .."
+            #post_id = find_id(post.title)
+            post_id = find_id(mlsnumber)
+            if post_id:
+                # check if sold date variable is set and update existing post to reflect the property as sold
+                if solddate == "" :
+                    print "Sorry, a post ID exists already"
+                else :
+                    post.title = "[SOLD!] " + post.title
+                    wp.call(posts.EditPost(post.id, post))
+            else:
+                print "No existing duplicate post found .. posting to wordpress .."
+                # GET The image files via FTP
+                print "Starting FTP connection to get listing photos .."
+                ftp = FTP("3pv.torontomls.net", timeout=320)
+                ftp.set_debuglevel(0)
+                try:
+                    ftp.login(user + "@photos", password)
+                except:
+                    print "Error, could not login.."
+                try:
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/1/" + mlsimage + '/', mlsnumber + ".jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_2.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/3/" + mlsimage + '/', mlsnumber + "_3.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/4/" + mlsimage + '/', mlsnumber + "_4.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/5/" + mlsimage + '/', mlsnumber + "_5.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/6/" + mlsimage + '/', mlsnumber + "_6.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/7/" + mlsimage + '/', mlsnumber + "_7.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/8/" + mlsimage + '/', mlsnumber + "_8.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/9/" + mlsimage + '/', mlsnumber + "_9.jpg")
+                except:
+                    print "Error downloading images via FTP ..."
+                try:
+                    ftp.close()
+                except:
+                    print "Error closing FTP connection ..."
 
-                                # Adjust permissions , change 33 to whatever GID/UID you need
-                                os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
-                                for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
-                                        for filename in files:
-                                                os.chown(os.path.join(root, filename), userperm, groupperm)
-				#Output text to a post file to be eventually posted to wordpress	
-				template_out = open(cur_path + "/metadata/" + mlsnumber + "_post.txt", "w")
-				template_out.write(post.content)
-				template_out.close()
-				post.id = wp.call(NewPost(post))
+                print "FTP Download complete .."
+
+                # Adjust permissions , change 33 to whatever GID/UID you need
+                os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
+                for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
+                    for filename in files:
+                        os.chown(os.path.join(root, filename), userperm, groupperm)
+
+                #Output text to a post file to be eventually posted to wordpress    
+                template_out = open(cur_path + "/metadata/" + mlsnumber + "_post.txt", "w")
+                template_out.write(post.content)
+                template_out.close()
+                post.id = wp.call(NewPost(post))
 
                 # Set featured image
                 featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + "_2.jpg"
@@ -448,9 +443,12 @@ var ws_height = '300';
                 if attachment_id:
                     post.thumbnail = attachment_id
 
+                # Set post to publish
                 post.post_status = 'publish'
                 wp.call(posts.EditPost(post.id, post))
                 post_link = wp.call(posts.GetPost(post.id))
+
+                # Post to twitter
                 if tw_enabled == "true":
                     print "Posting to twitter .."
                     auth = tweepy.OAuthHandler(tw_consumer, tw_secret)
@@ -472,32 +470,31 @@ var ws_height = '300';
                                 api.update_status(tweet_fixed[:140])
                             except Exception, e:
                                 print 'Twitter error : ' + str(e)
-	finally:
-		f.close() #cleanup
-		silentremove(outfile)
-	
-	# Unavailable option
+    finally:
+        f.close() #cleanup
+        silentremove(outfile)
+    
+    # Unavailable option
 elif avail_opt == "unavail" :
 
-        # read the csv file
-        f = open(outfile, 'r') #open file
-        try:
-                r = csv.reader(f) #init csv reader
-                r.next()
-                wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
-                for row in r:
-                        mlsnumber = row[0]
-		        # Prepare post title for search
-		        unavail_id = unlist_mls(mlsnumber)
-		        if unavail_id : 
-			     print "The following post has been unpublished : " + mlsnumber 
-		        else:
-			     print "No matches for any posts with the MLS " + mlsnumber
+    # read the csv file
+    f = open(outfile, 'r') #open file
+    try:
+        r = csv.reader(f) #init csv reader
+        r.next()
+        wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
+        for row in r:
+            mlsnumber = row[0]
+            # Prepare post title for search
+            unavail_id = unlist_mls(mlsnumber)
+            if unavail_id : 
+                print "The following post has been unpublished : " + mlsnumber 
+            else:
+                print "No matches for any posts with the MLS " + mlsnumber
 
-	finally:
-		f.close() #cleanup
-#		silentremove(outfile)
+    finally:
+        f.close() #cleanup
 
 else :
-	print "Invalid command options given"
-	sys.exit(0)
+    print "Invalid command options given"
+    sys.exit(0)
