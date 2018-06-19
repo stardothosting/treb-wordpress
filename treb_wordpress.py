@@ -23,6 +23,7 @@ import csv, sys, urllib, urlparse, string, time, locale, os, os.path, socket, re
 import ConfigParser
 import math
 import base64
+import json
 from datetime import date, timedelta
 from ftplib import FTP
 from pygeocoder import Geocoder
@@ -37,7 +38,7 @@ from wordpress_xmlrpc.methods import *
 
 #twitter
 import tweepy
-import bitlyapi
+import bitly_api as bitly
 
 # debug
 import pprint 
@@ -294,7 +295,6 @@ if avail_opt == "avail":
                 lng = str(lng)
             except GeocoderError as e:
                 print('*** Caught exception: %s: %s' % (e.__class__, e))
-                traceback.print_exc()
                 print 'Error getting address, skipping'
                 (lat,lng) = (0.0,0.0)
                 continue
@@ -417,32 +417,33 @@ var ws_height = '300';
                 os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
                 for root, dirs, files in os.walk(rootdir + "/wp-content/uploads/treb/" + mlsnumber):
                     for filename in files:
-                        os.chown(os.path.join(root, filename), userperm, groupperm)
-
-                #Output text to a post file to be eventually posted to wordpress    
-                template_out = open(cur_path + "/metadata/" + mlsnumber + "_post.txt", "w")
-                template_out.write(post.content)
-                template_out.close()
-                post.id = wp.call(NewPost(post))
+                            os.chown(os.path.join(root, filename), userperm, groupperm)
 
                 # Set featured image
                 featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + "_2.jpg"
-                featured_data = {
-                'name': mlsnumber + "_2.jpg",
-                'type': 'image/jpeg',
-                }
-                try:
-                    with open(featured_filename, 'rb') as img:
-                        featured_data['bits'] = xmlrpc_client.Binary(img.read())
-                        response = wp.call(media.UploadFile(featured_data))
-                        attachment_id = response['id']
-                except Exception as e:
-                    print('*** Caught exception: %s: %s' % (e.__class__, e))
-                    traceback.print_exc()
+                if os.path.isfile(featured_filename):
+                    featured_data = {
+                    'name': mlsnumber + "_2.jpg",
+                    'type': 'image/jpeg',
+                    }
+                    try:
+                        with open(featured_filename, 'rb') as img:
+                            featured_data['bits'] = xmlrpc_client.Binary(img.read())
+                            response = wp.call(media.UploadFile(featured_data))
+                            attachment_id = response['id']
+                            #Output text to a post file to be eventually posted to wordpress
+                            template_out = open(cur_path + "/metadata/" + mlsnumber + "_post.txt", "w")
+                            template_out.write(post.content)
+                            template_out.close()
+                            post.id = wp.call(NewPost(post))
+                            if attachment_id:
+                                post.thumbnail = attachment_id
+                    except Exception as e:
+                        print('*** Caught exception: %s: %s' % (e.__class__, e))
+                else: 
+                    print "Featured image filename not found, skipping this listing.."
+                    continue
     
-                if attachment_id:
-                    post.thumbnail = attachment_id
-
                 # Set post to publish
                 post.post_status = 'publish'
                 wp.call(posts.EditPost(post.id, post))
@@ -454,22 +455,23 @@ var ws_height = '300';
                     auth = tweepy.OAuthHandler(tw_consumer, tw_secret)
                     auth.set_access_token(tw_token, tw_token_secret)
                     api = tweepy.API(auth)
-                    b = bitlyapi.BitLy(tw_bitlyuser, tw_bitlykey)
-                    tweet = 'New Listing : ' , addressfix , ' , ' , listpricefix , ' , ' , bedrooms , ' beds ' , bathrooms , ' baths '
+                    b = bitly.Connection(access_token=tw_bitlykey)
+                    tweet = 'New Listing : ' + str(addressfix) + ' , ' + str(listpricefix) + ' , ' + str(bedrooms) + ' beds ' + str(bathrooms) + ' baths '
                     hashtag_list = tw_hashtags.split(',')
                     for hash in hashtag_list:
-                        tweet += '#', hash , ' '
-                        tweet_fixed = ''.join(str(e) for e in tweet)
-                        try:
-                            bitly_url = b.shorten(longUrl=post_link.link)
-                        except Exception, e:
-                            print 'Bitly error : ' + str(e)
-                            bitly_url = '' 
-                            tweet_fixed += ' ' + str(bitly_url['url'])
-                            try: 
-                                api.update_status(tweet_fixed[:140])
-                            except Exception, e:
-                                print 'Twitter error : ' + str(e)
+                        tweet = str(tweet) + '#' + str(hash) + ' '
+                    tweet_fixed = ''.join(str(e) for e in tweet)
+                    try:
+                        bitly_url = json.loads(b.shorten(post_link.link))
+                        tweet_url = bitly_url["url"]
+                    except Exception, e:
+                        print 'Bitly error : ' + str(e)
+                        tweet_url = post_link.link 
+                    tweet_fixed += ' ' + str(tweet_url)
+                    try: 
+                        api.update_status(tweet_fixed[:140])
+                    except Exception, e:
+                        print 'Twitter error : ' + str(e)
     finally:
         f.close() #cleanup
         silentremove(outfile)
