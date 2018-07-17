@@ -456,7 +456,7 @@ var ws_height = '300';
                     auth.set_access_token(tw_token, tw_token_secret)
                     api = tweepy.API(auth)
                     b = bitly.Connection(access_token=tw_bitlykey)
-                    tweet = 'New Listing : ' + str(addressfix) + ' , ' + str(listpricefix) + ' , ' + str(bedrooms) + ' beds ' + str(bathrooms) + ' baths '
+                    tweet = 'New Listing : ' + str(addressfix) + ' , ' + str(listpricefix) + ' , ' + str(bedrooms) + ' beds ' + str(bathrooms) + ' baths ' + '#' + str(mlsnumber) + ' '
                     hashtag_list = tw_hashtags.split(',')
                     for hash in hashtag_list:
                         tweet = str(tweet) + '#' + str(hash) + ' '
