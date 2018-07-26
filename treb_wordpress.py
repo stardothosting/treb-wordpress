@@ -355,7 +355,7 @@ var ws_address = '%s %s %s, %s, %s, %s'
 var ws_format = 'square';
 var ws_width = '300';
 var ws_height = '300';
-</script><style type='text/css'>#ws-walkscore-tile{position:relative;text-align:left}#ws-walkscore-tile *{float:none;}</style><div id='ws-walkscore-tile'></div><script type='text/javascript' src='http://www.walkscore.com/tile/show-walkscore-tile.php'></script>
+</script><style type='text/css'>#ws-walkscore-tile{position:relative;text-align:left}#ws-walkscore-tile *{float:none;}</style><div id='ws-walkscore-tile'></div><script type='text/javascript' src='https://www.walkscore.com/tile/show-walkscore-tile.php'></script>
 """ % (walkscore_id, streetnumber, streetname, streetsuffix, municipality, province, country)
             else:
                 walkscore_code = " "
