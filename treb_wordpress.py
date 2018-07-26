@@ -332,8 +332,19 @@ if avail_opt == "avail":
             listing_gallery_7 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_7.jpg" % (siteurl, mlsnumber, mlsnumber))
             listing_gallery_8 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_8.jpg" % (siteurl, mlsnumber, mlsnumber))
             listing_gallery_9 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_9.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_10 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_10.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_11 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_11.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_12 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_12.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_13 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_13.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_14 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_14.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_15 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_15.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_16 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_16.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_17 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_17.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_18 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_18.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_19 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_19.jpg"% (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_20 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_20.jpg"% (siteurl, mlsnumber, mlsnumber))
 
-            listing_gallery = listing_gallery_1 + "%2C" + listing_gallery_2 + "%2C" + listing_gallery_3 + "%2C" + listing_gallery_4 + "%2C" + listing_gallery_5 + "%2C" + listing_gallery_6 + "%2C" + listing_gallery_7 + "%2C" + listing_gallery_8 + "%2C" + listing_gallery_9
+            listing_gallery = listing_gallery_1 + "%2C" + listing_gallery_2 + "%2C" + listing_gallery_3 + "%2C" + listing_gallery_4 + "%2C" + listing_gallery_5 + "%2C" + listing_gallery_6 + "%2C" + listing_gallery_7 + "%2C" + listing_gallery_8 + "%2C" + listing_gallery_9 + "%2C" + listing_gallery_10 + "%2C" + listing_gallery_11 + "%2C" + listing_gallery_12 + "%2C" + listing_gallery_13 + "%2C" + listing_gallery_14 + "%2C" + listing_gallery_15 + "%2C" + listing_gallery_16 + "%2C" + listing_gallery_17 + "%2C" + listing_gallery_18 + "%2C" + listing_gallery_19 + "%2C" + listing_gallery_20
 
             listing_gallery_base64 = base64.b64encode(listing_gallery)
             if walkscore_enabled == 'true':
@@ -404,6 +415,17 @@ var ws_height = '300';
                     ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/7/" + mlsimage + '/', mlsnumber + "_7.jpg")
                     ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/8/" + mlsimage + '/', mlsnumber + "_8.jpg")
                     ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/9/" + mlsimage + '/', mlsnumber + "_9.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/10/" + mlsimage + '/', mlsnumber + "_10.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/11/" + mlsimage + '/', mlsnumber + "_11.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/12/" + mlsimage + '/', mlsnumber + "_12.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/13/" + mlsimage + '/', mlsnumber + "_13.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/14/" + mlsimage + '/', mlsnumber + "_14.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/15/" + mlsimage + '/', mlsnumber + "_15.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/16/" + mlsimage + '/', mlsnumber + "_16.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/17/" + mlsimage + '/', mlsnumber + "_17.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/18/" + mlsimage + '/', mlsnumber + "_18.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/19/" + mlsimage + '/', mlsnumber + "_19.jpg")
+                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/20/" + mlsimage + '/', mlsnumber + "_20.jpg")
                 except:
                     print "Error downloading images via FTP ..."
                 try:
@@ -420,10 +442,10 @@ var ws_height = '300';
                             os.chown(os.path.join(root, filename), userperm, groupperm)
 
                 # Set featured image
-                featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + "_2.jpg"
+                featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + ".jpg"
                 if os.path.isfile(featured_filename):
                     featured_data = {
-                    'name': mlsnumber + "_2.jpg",
+                    'name': mlsnumber + ".jpg",
                     'type': 'image/jpeg',
                     }
                     try:
