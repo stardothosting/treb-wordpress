@@ -466,10 +466,10 @@ var ws_height = '300';
                         tweet_url = bitly_url["url"]
                     except Exception, e:
                         print 'Bitly error : ' + str(e)
-                        tweet_url = post_link.link 
+                    tweet_url = post_link.link 
                     tweet_fixed += ' ' + str(tweet_url)
                     try: 
-                        api.update_status(tweet_fixed[:140])
+                        api.update_status(tweet_fixed[:280])
                     except Exception, e:
                         print 'Twitter error : ' + str(e)
     finally:
