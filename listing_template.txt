@@ -23,7 +23,7 @@
 [/vc_column][/vc_row]
 [vc_row full_width="stretch_row_content_no_spaces" el_class="rl-padding rr-padding"][vc_column]
 [vc_empty_space height="25px"]
-<div class="tpt-googlemap" id="map">&nbsp;</div>[/vc_column][/vc_row]
+<div class="tpt-googlemap" id="map">map</div>[/vc_column][/vc_row]
 <script language="javascript" type="text/javascript">
 function initMap() {
 	var theLatLng = {lat: %MAPLAT%, lng: %MAPLNG%};
