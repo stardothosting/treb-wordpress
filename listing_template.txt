@@ -23,19 +23,20 @@
 [/vc_column][/vc_row]
 [vc_row full_width="stretch_row_content_no_spaces" el_class="rl-padding rr-padding"][vc_column]
 [vc_empty_space height="25px"]
-<div class="tpt-googlemap" id="map">map</div>[/vc_column][/vc_row]
-<script language="javascript" type="text/javascript">
+[vc_raw_html]<div class="tpt-googlemap" id="map">map</div>[/vc_raw_html]
+[vc_raw_js]<script language="javascript" type="text/javascript">
 function initMap() {
-	var theLatLng = {lat: %MAPLAT%, lng: %MAPLNG%};
-	var map = new google.maps.Map(document.getElementById('map'), {
-	center: theLatLng,
-	zoom: 15
-	});
-	var marker = new google.maps.Marker({
+    var theLatLng = {lat: %MAPLAT%, lng: %MAPLNG%};
+    var map = new google.maps.Map(document.getElementById('map'), {
+    center: theLatLng,
+    zoom: 15
+    });
+    var marker = new google.maps.Marker({
           position: theLatLng,
           map: map,
           title: '%STREETNUMBER% %STREETNAME%'
         });
 }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=%GOOGLEMAPAPI%&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=%GOOGLEMAPAPI%&callback=initMap" async defer></script>[/vc_raw_js]
+[/vc_column][/vc_row]
