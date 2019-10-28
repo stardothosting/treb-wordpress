@@ -23,7 +23,7 @@
 [/vc_column][/vc_row]
 [vc_row full_width="stretch_row_content_no_spaces" el_class="rl-padding rr-padding"][vc_column]
 [vc_empty_space height="25px"]
-[vc_raw_html]<div class="tpt-googlemap" id="map">map</div>[/vc_raw_html]
+[vc_raw_html]JTNDZGl2JTIwY2xhc3MlM0QlMjJ0cHQtZ29vZ2xlbWFwJTIyJTIwaWQlM0QlMjJtYXAlMjIlM0VtYXAlM0MlMkZkaXYlM0U=[/vc_raw_html]
 [vc_raw_js]<script language="javascript" type="text/javascript">
 function initMap() {
     var theLatLng = {lat: %MAPLAT%, lng: %MAPLNG%};
