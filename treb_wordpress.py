@@ -38,7 +38,6 @@ from wordpress_xmlrpc.methods import *
 
 #twitter
 import tweepy
-import bitly_api as bitly
 
 # debug
 import pprint 
@@ -189,8 +188,6 @@ if tw_enabled == "true":
     tw_token = ConfigSectionMap("twitter")['access_token']
     tw_token_secret = ConfigSectionMap("twitter")['access_token_secret']
     tw_hashtags = ConfigSectionMap("twitter")['hashtags']
-    tw_bitlyuser = ConfigSectionMap("twitter")['bitly_user']
-    tw_bitlykey = ConfigSectionMap("twitter")['bitly_key']
 walkscore_enabled = ConfigSectionMap("walkscore")['enabled']
 if walkscore_enabled == "true":
     walkscore_api_key = ConfigSectionMap("walkscore")['walkscore_api_key']
@@ -199,6 +196,7 @@ if walkscore_enabled == "true":
 # Get blog URL
 wp_site = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
 siteurl = wp_site.call(options.GetOptions(['home_url']))[0].value
+
 
 
 # declare variables based on arguments
@@ -477,17 +475,11 @@ var ws_height = '300';
                     auth = tweepy.OAuthHandler(tw_consumer, tw_secret)
                     auth.set_access_token(tw_token, tw_token_secret)
                     api = tweepy.API(auth)
-                    b = bitly.Connection(access_token=tw_bitlykey)
                     tweet = 'New Listing : ' + str(addressfix) + ' , ' + str(listpricefix) + ' , ' + str(bedrooms) + ' beds ' + str(bathrooms) + ' baths ' + '#' + str(mlsnumber) + ' '
                     hashtag_list = tw_hashtags.split(',')
                     for hash in hashtag_list:
                         tweet = str(tweet) + '#' + str(hash) + ' '
                     tweet_fixed = ''.join(str(e) for e in tweet)
-                    try:
-                        bitly_url = json.loads(b.shorten(post_link.link))
-                        tweet_url = bitly_url["url"]
-                    except Exception, e:
-                        print 'Bitly error : ' + str(e)
                     tweet_url = post_link.link 
                     tweet_fixed += ' ' + str(tweet_url)
                     try: 

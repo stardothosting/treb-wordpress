@@ -1,0 +1,53 @@
+MLS Image : 211
+Post title : 2084 Turnberry Rd, Burlington, Ontario
+Checking if post exists ..
+No existing duplicate post found .. posting to wordpress ..
+Starting FTP connection to get listing photos ..
+FTP Download complete ..
+Posting to twitter ..
+Bitly error : INVALID_ARG_ACCESS_TOKEN
+MLS NUMBER : W5632274
+Agent ID 9569644 not in exclude list ..
+Address for geocoder : 362 The East Mall, Toronto, Ontario
+MLS Image : 274
+Post title : 362 The East Mall, Toronto, Ontario
+Checking if post exists ..
+No existing duplicate post found .. posting to wordpress ..
+Starting FTP connection to get listing photos ..
+FTP Download complete ..
+Posting to twitter ..
+Bitly error : INVALID_ARG_ACCESS_TOKEN
+MLS NUMBER : X5587010
+Agent ID 9559016 not in exclude list ..
+Address for geocoder : 34 Visser Dr, Puslinch, Ontario
+MLS Image : 010
+No photos ...
+Post title : 34 Visser Dr, Puslinch, Ontario
+Checking if post exists ..
+Sorry, a post ID exists already
+MLS NUMBER : X5624944
+Listing X5624944 is below $200000 , Not adding
+MLS NUMBER : X5629054
+Agent ID 9529134 not in exclude list ..
+Address for geocoder : 32 Valleyview Cres, Middlesex Centre, Ontario
+MLS Image : 054
+No photos ...
+Post title : 32 Valleyview Cres, Middlesex Centre, Ontario
+Checking if post exists ..
+Sorry, a post ID exists already
+MLS NUMBER : X5631004
+Agent ID 9568653 not in exclude list ..
+Address for geocoder : 210 Emerald Dr, Saugeen Shores, Ontario
+MLS Image : 004
+No photos ...
+Post title : 210 Emerald Dr, Saugeen Shores, Ontario
+Checking if post exists ..
+No existing duplicate post found .. posting to wordpress ..
+Starting FTP connection to get listing photos ..
+File not found.. exiting ..
+Cannot change working directory...
+Error downloading images via FTP ...
+FTP Download complete ..
+Posting to twitter ..
+Bitly error : INVALID_ARG_ACCESS_TOKEN
+[root@cp1 treb-wordpress]#
