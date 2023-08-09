@@ -16,7 +16,7 @@ Installation and Integration Instructions
 
 Integrating and installation instructions for this python code can be found here :
 
-http://www.shift8web.ca/blog/treb-idx-wordpress-integration/
+[Integrate Wordpress and TREB real estate listings](https://shift8web.ca/2013/07/treb-idx-wordpress-integration/)
 
 Listing Template
 ================
