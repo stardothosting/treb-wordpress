@@ -366,9 +366,9 @@ var ws_height = '300';
             #Replacements from the template
             reps = {'%STREETNUMBER%':streetnumber, '%STREETNAME%':streetname + ' ' + streetsuffix, '%APT_NUM%':apt_num, '%POSTALCODE%':postalcode, '%LISTPRICE%':listpricefix, '%MLSNUMBER%':mlsnumber, '%BATHROOMS%':bathrooms, '%BEDROOMS%':bedrooms, '%SQFOOTAGE%':squarefoot, '%DESCRIPTION%':description, '%VIRTUALTOUR%':virtualtour, '%WPBLOG%':siteurl, '%PHONEMSG%':phonemsg, '%MAPLAT%':lat, '%MAPLNG%':lng, '%BASE64IMAGES%':listing_gallery_base64, '%GOOGLEMAPAPI%':google_map_api_key,  '%WALKSCORECODE%':walkscore_code }
             post_excerpt = """
-<span class="tpt-ex-address">%s %s</span>
+<span class="tpt-ex-address">%s %s %s, %s</span>
 <span class="tpt-ex-price">%s</span>
-<span class="tpt-ex-mls">MLS : %s</span>""" % (streetnumber, streetname, listpricefix, mlsnumber)
+<span class="tpt-ex-mls">MLS : %s</span>""" % (streetnumber, streetname, streetsuffix, apt_num, listpricefix, mlsnumber)
 
             # Prepare the post
             wp = wordpress_xmlrpc.Client(wp_url,wp_username,wp_password,transport=SpecialTransport())
