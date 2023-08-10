@@ -79,24 +79,6 @@ def ConfigSectionMap(section):
             dict1[option] = None
     return dict1
 
-def ftpget( localpath, remotepath, filename ) :
-    # Go to destination DIR
-    os.chdir(localpath)
-    try:
-        ftp.cwd(remotepath)
-    except:
-        print "Cannot change working directory..."
-    #print "Local path : " + localpath
-    #print "Getting remote path : " + remotepath + " and filename : " + filename
-    #ftp.set_debuglevel(2)
-    ftp.sendcmd("TYPE i")
-    f = open(filename,"wb")
-    try:
-        ftp.retrbinary("RETR " + filename,f.write)
-    except:
-        print "File not found.. exiting .."
-        os.remove(filename)
-
 def find_id(tag):
      p = wp.call(taxonomies.GetTerms('post_tag'))
      if len(p) == 0:
