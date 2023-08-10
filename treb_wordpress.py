@@ -30,6 +30,7 @@ from pygeocoder import Geocoder
 from pygeolib import GeocoderError
 from tempfile import mkstemp
 from shutil import move
+from rets import Session
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc.methods.taxonomies import *
 from wordpress_xmlrpc.methods.posts import *
@@ -181,6 +182,10 @@ outfile = ConfigSectionMap("treb")['output_file']
 cur_path = os.getcwd()
 phonemsg = ConfigSectionMap("treb")['phone_msg']
 google_map_api_key = ConfigSectionMap("googlemap")['google_map_api_key']
+rets_user = ConfigSectionMap("treb")['rets_user']
+rets_pass = ConfigSectionMap("treb")['rets_pass']
+rets_url = ConfigSectionMap("treb")['rets_url']
+rets_ver = ConfigSectionMap("treb")['rets_ver']
 tw_enabled = ConfigSectionMap("twitter")['enabled']
 if tw_enabled == "true":
     tw_consumer = ConfigSectionMap("twitter")['consumer']
@@ -395,43 +400,30 @@ var ws_height = '300';
                     wp.call(posts.EditPost(post.id, post))
             else:
                 print "No existing duplicate post found .. posting to wordpress .."
-                # GET The image files via FTP
-                print "Starting FTP connection to get listing photos .."
-                ftp = FTP("3pv.torontomls.net", timeout=320)
-                ftp.set_debuglevel(0)
+                # GET The image files via RETS 
+                print "Starting RETS connection to get listing photos .."
+                rets_client = Session(rets_url, rets_user, rets_pass, rets_ver)
                 try:
-                    ftp.login(user + "@photos", password)
-                except:
-                    print "Error, could not login.."
-                try:
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/1/" + mlsimage + '/', mlsnumber + ".jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/2/" + mlsimage + '/', mlsnumber + "_2.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/3/" + mlsimage + '/', mlsnumber + "_3.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/4/" + mlsimage + '/', mlsnumber + "_4.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/5/" + mlsimage + '/', mlsnumber + "_5.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/6/" + mlsimage + '/', mlsnumber + "_6.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/7/" + mlsimage + '/', mlsnumber + "_7.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/8/" + mlsimage + '/', mlsnumber + "_8.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/9/" + mlsimage + '/', mlsnumber + "_9.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/10/" + mlsimage + '/', mlsnumber + "_10.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/11/" + mlsimage + '/', mlsnumber + "_11.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/12/" + mlsimage + '/', mlsnumber + "_12.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/13/" + mlsimage + '/', mlsnumber + "_13.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/14/" + mlsimage + '/', mlsnumber + "_14.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/15/" + mlsimage + '/', mlsnumber + "_15.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/16/" + mlsimage + '/', mlsnumber + "_16.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/17/" + mlsimage + '/', mlsnumber + "_17.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/18/" + mlsimage + '/', mlsnumber + "_18.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/19/" + mlsimage + '/', mlsnumber + "_19.jpg")
-                    ftpget( rootdir + "/wp-content/uploads/treb/" + mlsnumber, "/mlsphotos/20/" + mlsimage + '/', mlsnumber + "_20.jpg")
-                except:
-                    print "Error downloading images via FTP ..."
-                try:
-                    ftp.close()
-                except:
-                    print "Error closing FTP connection ..."
+                    rets_client.login()
+                    objects = rets_client.get_object(
+                        resource='Property',
+                        object_type='Photo',
+                        content_ids=mlsnumber
+                    )
+                    if objects:
+                        print "Objects exist .."
+                        os.mkdir(rootdir + "/wp-content/uploads/treb/" + mlsnumber)
+                        for index,ob in enumerate(objects):
+                            file_name = "{}_{}.jpg".format(mlsnumber, index)
+                            with open(os.path.join(rootdir + "/wp-content/uploads/treb/" + mlsnumber,file_name), 'wb') as f:
+                                f.write(ob['content'])
+                    else:
+                        print "Image object in RETS query is empty ..."
+                    rets_client.logout()
+                except Exception as error:
+                    print("Error downloading images via RETS : ", error)
 
-                print "FTP Download complete .."
+                print "RETS Download complete .."
 
                 # Adjust permissions , change 33 to whatever GID/UID you need
                 os.chown(rootdir + "/wp-content/uploads/treb/" + mlsnumber, userperm, groupperm)
@@ -440,7 +432,7 @@ var ws_height = '300';
                             os.chown(os.path.join(root, filename), userperm, groupperm)
 
                 # Set featured image
-                featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + ".jpg"
+                featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + "_1.jpg"
                 if os.path.isfile(featured_filename):
                     featured_data = {
                     'name': mlsnumber + ".jpg",

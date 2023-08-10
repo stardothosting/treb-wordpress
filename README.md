@@ -23,6 +23,11 @@ Listing Template
 
 The listing_template.txt has been updated to utilize shortcode for WP Bakery's Visual Composer
 
+Images
+======
+
+Images with TRREB used to be accessible by a centralized FTP server. This was redired at the end of 2022 and access for listing photos moved to a [RETS feed](https://en.wikipedia.org/wiki/Real_Estate_Transaction_Standard). This was integrated and tested with the TRREB RETS feed using a python RETS client library. The result is an adjustment to the config file to accommodate the RETS username, password and URL. This system largely operates the same way it did with FTP albeit much faster than FTP which is an added bonus.
+
 Google Map
 ==========
 
