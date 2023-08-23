@@ -302,7 +302,7 @@ if avail_opt == "avail":
                 else:
                         print "No photos ..."
 
-                # Generate post content from the template file
+            # Generate post content from the template file
             template_read = open(cur_path + "/listing_template.txt", "r")
             template_text = template_read.read()
             template_read.close()
@@ -417,7 +417,7 @@ var ws_height = '300';
                 featured_filename = rootdir + "/wp-content/uploads/treb/" + mlsnumber + "/" + mlsnumber + "_1.jpg"
                 if os.path.isfile(featured_filename):
                     featured_data = {
-                    'name': mlsnumber + ".jpg",
+                    'name': mlsnumber + "_1.jpg",
                     'type': 'image/jpeg',
                     }
                     try:
