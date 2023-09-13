@@ -308,7 +308,7 @@ if avail_opt == "avail":
             template_read.close()
 
             # Prepare Base64 encoded string for gallery 
-            listing_gallery_1 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s.jpg" % (siteurl, mlsnumber, mlsnumber))
+            listing_gallery_1 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_1.jpg" % (siteurl, mlsnumber, mlsnumber))
             listing_gallery_2 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_2.jpg" % (siteurl, mlsnumber, mlsnumber))
             listing_gallery_3 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_3.jpg" % (siteurl, mlsnumber, mlsnumber))
             listing_gallery_4 = urllib.quote_plus("%s/wp-content/uploads/treb/%s/%s_4.jpg" % (siteurl, mlsnumber, mlsnumber))
